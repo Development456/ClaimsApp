@@ -26,6 +26,7 @@ export class DataCardsComponent implements OnInit {
   selectedData: any;
   facility: any = [];
   facilityData: any;
+  customersDropdown: any = [];
   masterData: any = [];
   count: any;
   uniqueChars: any = [];
@@ -65,7 +66,7 @@ export class DataCardsComponent implements OnInit {
   getCustomer(){
     this.http.getCustomer().subscribe(data => {
       this.isCustomerLoading = false;
-      this.customers = data;
+      this.customersDropdown = data;
     },
     (error) => {
       this.isCustomerLoading = true;
@@ -129,4 +130,7 @@ export class DataCardsComponent implements OnInit {
     this.getClaims(e.value);
   }
 
+  changeCustomer(e: any){
+    this.getCustomer();
+  }
 }

@@ -34,6 +34,18 @@
                     <mat-card-title *ngIf="this.customers.length && !(this.uniqueChars.length)">{{customers.length }}</mat-card-title>
                     <mat-card-title *ngIf="this.uniqueChars.length">{{this.uniqueChars.length }}</mat-card-title>
                 </mat-card-header>
+
+                <mat-form-field>
+                    <mat-label>Select customer</mat-label>
+                        <mat-select (selectionChange)="changeCustomer($event)">
+                        <mat-option>None</mat-option>
+                        <mat-option *ngFor="let Wearhouse of customersDropdown" [value]="Wearhouse.customerId">
+                            {{Wearhouse.name}}
+                        </mat-option>
+    
+                    </mat-select>
+                </mat-form-field>
+                
             </mat-card>
             <mat-card fxFlex="20%">
                 <mat-card-header>
