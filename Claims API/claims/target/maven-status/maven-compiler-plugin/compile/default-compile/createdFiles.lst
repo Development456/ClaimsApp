@@ -1,12 +1,12 @@
 com\miracle\claims\ClaimsApplication.class
+com\miracle\claims\beans\ClaimsResponse.class
 com\miracle\claims\service\ClaimsServiceImpl.class
-com\miracle\claims\entity\Claim.class
 com\miracle\claims\exception\GlobalExceptionHandler.class
 com\miracle\claims\controller\ClaimsController.class
 com\miracle\claims\repository\ClaimsRepository.class
 com\miracle\claims\config\SwaggerConfig.class
 com\miracle\claims\service\ClaimsSequenceGeneratorService.class
-com\miracle\claims\entity\ClaimsSequence.class
+com\miracle\claims\beans\Claim.class
+com\miracle\claims\beans\ClaimsSequence.class
 com\miracle\claims\exception\ErrorDetails.class
-com\miracle\claims\entity\ClaimsResponse.class
 com\miracle\claims\service\ClaimsService.class

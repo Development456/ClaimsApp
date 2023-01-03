@@ -1,4 +1,4 @@
-package com.miracle.userlogin.controller;
+package com.miracle.login.controller;
 
 import java.util.HashSet;
 import java.util.List;
@@ -9,9 +9,11 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,17 +22,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.miracle.userlogin.beans.ERole;
-import com.miracle.userlogin.beans.Role;
-import com.miracle.userlogin.beans.User;
-import com.miracle.userlogin.jwt.JwtUtils;
-import com.miracle.userlogin.jwt.UserDetailsImpl;
-import com.miracle.userlogin.jwt.payload.JwtResponse;
-import com.miracle.userlogin.jwt.payload.LoginRequest;
-import com.miracle.userlogin.jwt.payload.MessageResponse;
-import com.miracle.userlogin.jwt.payload.SignupRequest;
-import com.miracle.userlogin.repository.RoleRepository;
-import com.miracle.userlogin.repository.UserRepository;
+import com.miracle.login.beans.ERole;
+import com.miracle.login.beans.RefreshToken;
+import com.miracle.login.beans.Role;
+import com.miracle.login.beans.User;
+import com.miracle.login.exception.TokenRefreshException;
+import com.miracle.login.jwt.JwtUtils;
+import com.miracle.login.jwt.RefreshTokenService;
+import com.miracle.login.jwt.UserDetailsImpl;
+import com.miracle.login.jwt.payload.JwtResponse;
+import com.miracle.login.jwt.payload.LoginRequest;
+import com.miracle.login.jwt.payload.MessageResponse;
+import com.miracle.login.jwt.payload.SignupRequest;
+import com.miracle.login.jwt.payload.TokenRefreshRequest;
+import com.miracle.login.jwt.payload.TokenRefreshResponse;
+import com.miracle.login.repository.RoleRepository;
+import com.miracle.login.repository.UserRepository;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -38,6 +45,9 @@ import com.miracle.userlogin.repository.UserRepository;
 public class AuthController {
 	@Autowired
 	AuthenticationManager authenticationManager;
+
+	@Autowired
+	RefreshTokenService refreshTokenService;
 
 	@Autowired
 	UserRepository userRepository;
@@ -58,18 +68,34 @@ public class AuthController {
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		String jwt = jwtUtils.generateJwtToken(authentication);
+		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+		String jwt = jwtUtils.generateJwtToken(userDetails);
 		
-		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();		
 		List<String> roles = userDetails.getAuthorities().stream()
 				.map(item -> item.getAuthority())
 				.collect(Collectors.toList());
+	    RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
-		return ResponseEntity.ok(new JwtResponse(jwt, 
+
+		return ResponseEntity.ok(new JwtResponse(jwt, refreshToken.getToken(),
 												 userDetails.getId(), 
 												 userDetails.getUsername(), 
 												 userDetails.getEmail(), 
 												 roles));
+	}
+	@PostMapping("/refreshtoken")
+	public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest request) {
+		String requestRefreshToken = request.getRefreshToken();
+
+	    return refreshTokenService.findByToken(requestRefreshToken)
+	        .map(refreshTokenService::verifyExpiration)
+	        .map(RefreshToken::getUser)
+	        .map(user -> {
+	          String token = jwtUtils.generateTokenFromUsername(user.getUsername());
+	          return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
+	        })
+	        .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
+	            "Refresh token is not in database!"));
 	}
 
 	@PostMapping("/signup")

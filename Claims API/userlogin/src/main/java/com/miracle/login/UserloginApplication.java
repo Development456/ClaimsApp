@@ -1,4 +1,4 @@
-package com.miracle.userlogin;
+package com.miracle.login;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

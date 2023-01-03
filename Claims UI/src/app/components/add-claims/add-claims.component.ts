@@ -179,7 +179,8 @@ export class AddClaimComponent implements OnInit,DoCheck {
   listItems(items:any){
     this.ordersList = {row:[],formValues:{}};
     setTimeout(()=>{
-    this.ordersList = items;
+      console.log(items);
+    this.ordersList.row = items;
     console.log(this.ordersList);
 
     },500)

@@ -1,11 +1,11 @@
-package com.miracle.userlogin.repository;
+package com.miracle.login.repository;
 
 import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.miracle.userlogin.beans.ERole;
-import com.miracle.userlogin.beans.Role;
+import com.miracle.login.beans.ERole;
+import com.miracle.login.beans.Role;
 
 public interface RoleRepository extends MongoRepository<Role, String> {
 	Optional<Role> findByName(ERole name);

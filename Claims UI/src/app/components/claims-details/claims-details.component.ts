@@ -29,6 +29,7 @@ export class ClaimsDetailsComponent implements OnInit, OnDestroy {
   facilityList: any = [];
   customerList: string[] = [];
   updateCalims: Subscription = new Subscription();
+  isLoading: boolean = false;
 
   constructor(public dialogRef: MatDialogRef<ClaimsDetailsComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any, 
@@ -38,8 +39,10 @@ export class ClaimsDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initializeForm();
+    this.isLoading = true;
     this.userMode = localStorage.getItem('userDetails') ? localStorage.getItem('userDetails') : 'user';
     this.http.getFacility().subscribe((data: any) => {
+      this.isLoading = false;
       this.facilityList = data;
     });
 
@@ -110,12 +113,15 @@ export class ClaimsDetailsComponent implements OnInit, OnDestroy {
 
   saveClaimDetails() {
     this.editServiceCall(this.firstFormGroup.value, this.costDetails.value);
+    this.isLoading = true;
     this.updateCalims = this.http.updateClaim(this.claimsUpdatedData, this.data.rowData.serviceProviderClaimId).subscribe((data)=>{
       console.log('Edit succesful!!')
+      this.isLoading = false;
       this._snackBar.open("Progress Saved", "Close", {  duration: 5000 });
       this.dialogRef.close({data: this.claimsUpdatedData});
     }, 
     (error) => {
+      this.isLoading = false;
       this._snackBar.open("Error while Editing", "Close", {  duration: 3000 });
     });
   }

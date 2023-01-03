@@ -1,4 +1,4 @@
-package com.miracle.userlogin.jwt;
+package com.miracle.login.jwt;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,8 +7,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.miracle.userlogin.beans.User;
-import com.miracle.userlogin.repository.UserRepository;
+import com.miracle.login.beans.User;
+import com.miracle.login.repository.UserRepository;
 
 
 @Service

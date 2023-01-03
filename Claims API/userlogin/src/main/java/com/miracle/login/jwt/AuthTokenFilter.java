@@ -1,4 +1,4 @@
-package com.miracle.userlogin.jwt;
+package com.miracle.login.jwt;
 
 import java.io.IOException;
 

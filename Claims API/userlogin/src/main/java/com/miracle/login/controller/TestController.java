@@ -1,4 +1,4 @@
-package com.miracle.userlogin.controller;
+package com.miracle.login.controller;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -27,4 +27,5 @@ public class TestController {
 	public String adminAccess() {
 		return "Admin Board.";
 	}
+	
 }

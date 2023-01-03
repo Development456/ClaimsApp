@@ -1,4 +1,4 @@
-package com.miracle.userlogin.jwt;
+package com.miracle.login.jwt;
 
 import java.util.Collection;
 import java.util.List;
@@ -10,7 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.miracle.userlogin.beans.User;
+import com.miracle.login.beans.User;
 
 public class UserDetailsImpl implements UserDetails {
 	private static final long serialVersionUID = 1L;

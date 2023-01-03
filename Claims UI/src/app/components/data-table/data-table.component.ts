@@ -1,14 +1,18 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import * as XLSX from 'xlsx';
-import { DetailsModalComponent } from "./details-modal/details-modal.component"
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ColumnMode, SelectionType } from '@swimlane/ngx-datatable';
-import { ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ClaimsDetailsComponent } from '../claims-details/claims-details.component';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+
+import { AddClaimColumns } from '../mock-data/add-claim-columns.constant';
 import { ClaimsApiService } from 'src/app/claims-api.service';
-import { zip } from 'rxjs';
+import { ClaimsDetailsComponent } from '../claims-details/claims-details.component';
+import { ClaimsHomeTableColumns } from '../mock-data/claims-home-columns.constants';
+import { DetailsModalComponent } from "./details-modal/details-modal.component"
 import { ToastrService } from 'ngx-toastr';
+import { ViewEncapsulation } from '@angular/core';
+import { zip } from 'rxjs';
 
 const today = new Date();
 const month = today.getMonth();
@@ -41,84 +45,7 @@ export class DataTableComponent implements OnInit {
 		end: new FormControl(),
 	});
 	tableType = "claim";
-	public columns = [{
-		name: "Date",
-		props: "creationDate",
-		type: "Date",
-		show: true
-	}, {
-		name: "Status",
-		props: "claimStatus",
-		type: "text",
-		show: true
-	}, {
-		name: "Master Acct",
-		props: "masterAcct",
-		type: "text",
-		show: true
-	}, {
-		name: "Document Type",
-		props: "documentType",
-		type: "text",
-		show: true
-	},
-	{
-		name: "Facility",
-		props: "facilityId",
-		type: "text",
-		show: true
-	}, {
-		name: "Account",
-		props: "account",
-		type: "text",
-		show: true
-	}, {
-		name: "Amc Claim",
-		props: "serviceProviderClaimId",
-		type: "text",
-		show: true
-	}, {
-		name: "Claim Type",
-		props: "claimType",
-		type: "text",
-		show: true
-	}, {
-		name: "Category",
-		props: "category",
-		type: "text",
-		show: true
-	}, {
-		name: "Pallet Quantity",
-		props: "palletQuantity",
-		type: "number",
-		show: false
-	}, {
-		name: "Claimed Amount",
-		props: "claimedAmount",
-		type: "text",
-		show: false
-	},
-	{
-		name: "Paid Amount",
-		props: "paidAmount",
-		type: "number",
-		show: false
-	}, {
-		name: "Date Closed",
-		props: "dateClosed",
-		type: "Date",
-		show: false
-	}, {
-		name: "Carrier",
-		props: "carrier",
-		type: "text",
-		show: false
-	}, {
-		name: "Load Number",
-		props: "loadNumber",
-		type: "number",
-		show: false
-	}];
+	public columns = ClaimsHomeTableColumns;
 	public filteredColumns: any;
 	public ColumnMode = ColumnMode;
 	public rowHeight = 40;
@@ -130,12 +57,16 @@ export class DataTableComponent implements OnInit {
 	filteredObject: any;
 	filteredRowsAutoFill: any = {};
 	storedRows: any = [];
+	isLoading: boolean = false;
+
 	constructor(public dialog: MatDialog, private http: ClaimsApiService, private cd: ChangeDetectorRef) {
 	}
 	ngOnInit(): void {
+		this.isLoading = true;
 		this.showGrid = false;
 		this.filteredColumns = this.columns.filter(column => column.show === true);
 		this.http.getClaimByFacility(this.facilityChange).subscribe((data: any) => {
+			this.isLoading = false;
 			// this.rows = data;
 			if (data.length > 0) {
 				data = data.reverse();
@@ -159,7 +90,7 @@ export class DataTableComponent implements OnInit {
 			});
 			this.showGrid = true;
 
-		})
+		});
 		this.cd.markForCheck();
 
 		this.filteredRowsAutoFill = this.columns.map((item: any) => item.props);
@@ -261,62 +192,7 @@ export class DataTableOrdersComponent implements OnInit {
 		end: new FormControl(),
 	});
 	tableType = "order";
-	public columns = [{
-		name: "Item",
-		props: "item",
-		type: "number",
-		show: true
-	}, {
-		name: "Description",
-		props: "des",
-		type: "text",
-		show: true
-	}, {
-		name: "Date Code",
-		props: "dateCode",
-		type: "Date",
-		show: true
-	}, {
-		name: "Lot",
-		props: "lot",
-		type: "text",
-		show: true
-	}, {
-		name: "Quantity",
-		props: "quantity",
-		type: "text",
-		show: true
-	}, {
-		name: "LPN",
-		props: "LPN",
-		type: "text",
-		show: true
-	}, {
-		name: "NET",
-		props: "NET",
-		type: "text",
-		show: true
-	}, {
-		name: "Customer Reference",
-		props: "customerReference",
-		type: "text",
-		show: false
-	}, {
-		name: "AMC Refenrence",
-		props: "AMCRefenrence",
-		type: "number",
-		show: false
-	}, {
-		name: "Facility ID",
-		props: "facilityId",
-		type: "number",
-		show: false
-	}, {
-		name: "Customer ID",
-		props: "customerId",
-		type: "number",
-		show: false
-	}];
+	public columns = AddClaimColumns;
 	public filteredColumns: any;
 	public ColumnMode = ColumnMode;
 	public rowHeight = 40;
@@ -332,16 +208,19 @@ export class DataTableOrdersComponent implements OnInit {
 		facility: [''],
 		customer: ['']
 	})
+	isLoading: boolean = false;
+
 	constructor(public dialog: MatDialog, private http: ClaimsApiService, private _formBuilder: FormBuilder,
 		private cd: ChangeDetectorRef, private toastr: ToastrService) {
 	}
 
 	ngOnInit(): void {
+		this.isLoading = true;
 		this.filteredColumns = this.columns.filter(column => column.show === true);
 		this.filteredRows = this.rows;
 		let source$ = zip(this.http.getFacility(), this.http.getCustomer());
 		source$.subscribe(([facility, Customer]) => {
-
+			this.isLoading = false;
 			this.facilityList = facility;
 			this.customerList = Customer;
 

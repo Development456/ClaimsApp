@@ -1,4 +1,4 @@
-package com.miracle.userlogin.beans;
+package com.miracle.login.beans;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

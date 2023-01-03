@@ -1,7 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
 import { ChartOptions, ChartType } from 'chart.js';
-import { Color } from 'ng2-charts';
+import { Component, Input, OnInit } from '@angular/core';
+
 import { ClaimsApiService } from 'src/app/claims-api.service';
+import { Color } from 'ng2-charts';
 
 @Component({
   selector: 'app-bar-chart',
@@ -69,6 +70,7 @@ export class BarChartComponent implements OnInit {
   public barChartColor: Color[] = [
     { backgroundColor: ['#36A2EB', '#4BC0C0', '#FF6484', '#13FFFF', '#64FF16', '#36A2EB', '#4BC0C0', '#FF6484', '#13FFFF', '#64FF16', '#36A2EB', '#4BC0C0', '#FF6484', '#13FFFF', '#64FF16', '#36A2EB', '#4BC0C0', '#FF6484', '#13FFFF', '#64FF16'] },
   ];
+  isLoading: boolean = false;
 
   constructor(private http: ClaimsApiService) { }
 
@@ -76,8 +78,10 @@ export class BarChartComponent implements OnInit {
     this.barchartFlag = false;
     this.barChartData[0].data = [];
     this.barChartLabels = [];
+    this.isLoading = true;
     if (this.facilityChange) {
       this.http.getClaimByFacility(this.facilityChange).subscribe((data: any) => {
+        this.isLoading = false;
         let amount: any = [];
         data.forEach((claim: any, index: number) => {
           this.barChartLabels.push(this.claimData[index]?.masterAcct);
@@ -103,8 +107,9 @@ export class BarChartComponent implements OnInit {
     this.barchartFlag = false;
     this.barChartData[0].data = [];
     this.barChartLabels = [];
+    this.isLoading = true;
     this.http.getClaims().subscribe((data: any) => {
-
+      this.isLoading = false;
       let amount: any = [];
       data.forEach((claim: any, index: number) => {
         this.barChartLabels.push(this.claimData[index]?.masterAcct);
@@ -114,7 +119,6 @@ export class BarChartComponent implements OnInit {
         return b - a
       }).forEach((item: number) => {
         this.barChartData[0].data.push(item);
-
       });
 
       this.barChartLabels = this.barChartLabels.slice(0, 5);

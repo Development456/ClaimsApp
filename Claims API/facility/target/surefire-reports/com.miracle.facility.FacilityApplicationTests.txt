@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.miracle.facility.FacilityApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 20.357 s - in com.miracle.facility.FacilityApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 21.171 s - in com.miracle.facility.FacilityApplicationTests

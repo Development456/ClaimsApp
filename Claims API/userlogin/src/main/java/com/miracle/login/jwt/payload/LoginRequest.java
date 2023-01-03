@@ -1,4 +1,4 @@
-package com.miracle.userlogin.jwt.payload;
+package com.miracle.login.jwt.payload;
 
 import javax.validation.constraints.NotBlank;
 

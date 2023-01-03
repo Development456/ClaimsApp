@@ -1,12 +1,12 @@
 version: '3'
 services:
   eureka-server:
-    build: D:\miracleproject\server
+    build: D:\ClaimsApp\Claims API\server
     image: eureka-server
     ports: 
     - "8761:8761"
   claims:
-    build: D:\miracleproject\claims 
+    build: D:\ClaimsApp\Claims API\claims 
     image: claims
     container_name: claims
     ports:
@@ -18,7 +18,7 @@ services:
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
   facility: 
-    build: D:\miracleproject\facility 
+    build: D:\ClaimsApp\Claims API\facility 
     image: facility
     container_name: facility
     ports:
@@ -30,7 +30,7 @@ services:
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
   customer: 
-    build: D:\miracleproject\customer\customer 
+    build: D:\ClaimsApp\Claims API\customer 
     image: customer
     container_name: customer
     ports:
@@ -42,7 +42,7 @@ services:
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
   api-gateway:
-    build: D:\miracleproject\Gateway
+    build: D:\ClaimsApp\Claims API\apigateway
     image: apigateway
     container_name: apigateway
     depends_on:
@@ -58,5 +58,3 @@ services:
     ports: 
       - "27017:27017"
     restart: unless-stopped
-   
-  

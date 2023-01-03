@@ -1,4 +1,4 @@
-package com.miracle.userlogin.beans;
+package com.miracle.login.beans;
 import java.util.HashSet;
 import java.util.Set;
 

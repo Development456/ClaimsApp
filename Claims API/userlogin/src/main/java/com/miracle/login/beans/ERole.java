@@ -1,4 +1,4 @@
-package com.miracle.userlogin.beans;
+package com.miracle.login.beans;
 
 public enum ERole {
 	ROLE_USER,

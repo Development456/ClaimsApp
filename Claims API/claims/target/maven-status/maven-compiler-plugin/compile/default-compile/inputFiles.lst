@@ -1,12 +1,12 @@
 D:\ClaimsApp\Claims API\claims\src\main\java\com\miracle\claims\config\SwaggerConfig.java
 D:\ClaimsApp\Claims API\claims\src\main\java\com\miracle\claims\service\ClaimsService.java
 D:\ClaimsApp\Claims API\claims\src\main\java\com\miracle\claims\service\ClaimsServiceImpl.java
-D:\ClaimsApp\Claims API\claims\src\main\java\com\miracle\claims\entity\ClaimsSequence.java
-D:\ClaimsApp\Claims API\claims\src\main\java\com\miracle\claims\entity\Claim.java
+D:\ClaimsApp\Claims API\claims\src\main\java\com\miracle\claims\beans\Claim.java
+D:\ClaimsApp\Claims API\claims\src\main\java\com\miracle\claims\beans\ClaimsResponse.java
 D:\ClaimsApp\Claims API\claims\src\main\java\com\miracle\claims\exception\GlobalExceptionHandler.java
 D:\ClaimsApp\Claims API\claims\src\main\java\com\miracle\claims\service\ClaimsSequenceGeneratorService.java
 D:\ClaimsApp\Claims API\claims\src\main\java\com\miracle\claims\controller\ClaimsController.java
 D:\ClaimsApp\Claims API\claims\src\main\java\com\miracle\claims\repository\ClaimsRepository.java
+D:\ClaimsApp\Claims API\claims\src\main\java\com\miracle\claims\beans\ClaimsSequence.java
 D:\ClaimsApp\Claims API\claims\src\main\java\com\miracle\claims\ClaimsApplication.java
-D:\ClaimsApp\Claims API\claims\src\main\java\com\miracle\claims\entity\ClaimsResponse.java
 D:\ClaimsApp\Claims API\claims\src\main\java\com\miracle\claims\exception\ErrorDetails.java

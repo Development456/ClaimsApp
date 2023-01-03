@@ -1,3 +1,8 @@
+<div *ngIf="isLoading" class="snippet" data-title="dot-revolution">
+    <div class="stage">
+      <div class="dot-revolution"></div>
+    </div>
+</div>
 <div *ngIf="barchartFlag">
     <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions" [legend]="barChartLegends" [colors]="barChartColor" [chartType]="barChartType" height="130px"></canvas>
     <p style="text-align: center;color: #666666;">Master Account</p>

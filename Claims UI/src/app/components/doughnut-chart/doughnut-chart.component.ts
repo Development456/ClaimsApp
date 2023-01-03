@@ -1,6 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Color } from 'ng2-charts';
+import { Component, Input, OnInit } from '@angular/core';
+
 import { ClaimsApiService } from 'src/app/claims-api.service';
+import { Color } from 'ng2-charts';
+
 @Component({
   selector: 'app-doughnut-chart',
   templateUrl: './doughnut-chart.component.html',
@@ -30,12 +32,15 @@ export class DoughnutChartComponent implements OnInit {
   public doughnutChartColor: Color[] = [
     { backgroundColor: ['#FF9021', '#4BC0C0', '#36A2EB', '#FF6484', '#13FFFF', '#64FF16', '#FFA3B5', '#FFC898', '#FFE0A1', '#A0D0F5', '#9966FF'] },
   ];
+  isLoading: boolean = false;
 
   constructor(private http: ClaimsApiService) { }
 
   facilityCheck(): void {
     if (this.facilityChange) {
+      this.isLoading = true;
       this.http.getClaimByFacility(this.facilityChange).subscribe((data:any) => {
+        this.isLoading = false;
         this.doughnutChartLabels = [];
       this.doughnutChartData = [];
       let ele: any = {};
@@ -58,7 +63,9 @@ export class DoughnutChartComponent implements OnInit {
     }
   }
   ngOnInit(): void {
+    this.isLoading = true;
     this.http.getClaims().subscribe((data: any) => {
+      this.isLoading = false;
       this.doughnutChartLabels = [];
       this.doughnutChartData = [];
       let ele: any = {};

@@ -1,7 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+
 import { ClaimsApiService } from 'src/app/claims-api.service';
 import { Notifier } from '../dashboard/dashboard.component';
+
 @Component({
   selector: 'app-data-cards',
   templateUrl: './data-cards.component.html',
@@ -34,9 +36,16 @@ export class DataCardsComponent implements OnInit {
   totclaimamount: any = [];
   totpaidamount: any = [];
   Wearhouse: any;
+  isFacilityLoading: boolean = false;
+  isClaimsLoading: boolean = false;
+  isCustomerLoading: boolean = false;
+
   constructor(private http: ClaimsApiService) { }
 
   ngOnInit(): void {
+    this.isFacilityLoading = true;
+    this.isClaimsLoading = true;
+    this.isCustomerLoading = true;
     this.getFacility();
     this.getClaims('');
     this.getCustomer();
@@ -44,14 +53,24 @@ export class DataCardsComponent implements OnInit {
     this.Wearhouse = []
   }
   getFacility() {
-    this.http.getFacility().subscribe(data => {
+    this.http.getFacility().subscribe((data) => {
+      this.isFacilityLoading = false;
       this.facilities = data;
-    })
+    },
+    (error) => {
+      this.isFacilityLoading = true;
+    }
+    )
   }
   getCustomer(){
     this.http.getCustomer().subscribe(data => {
+      this.isCustomerLoading = false;
       this.customers = data;
-    })
+    },
+    (error) => {
+      this.isCustomerLoading = true;
+    }
+    )
   }
 
   getClaims(facilityId: string) {
@@ -60,6 +79,7 @@ export class DataCardsComponent implements OnInit {
     this.claimAmount = 0;
     this.paidAmount = 0;
     this.http.getClaimByFacility(facilityId).subscribe((data: any) => {
+      this.isClaimsLoading = false;
       if(!facilityId){
         this.getCustomer();
       }
@@ -77,6 +97,9 @@ export class DataCardsComponent implements OnInit {
         });
       }
 
+    },
+    (error) => {
+      this.isClaimsLoading = true;
     });
 
       this.facilityChange.emit(facilityId);

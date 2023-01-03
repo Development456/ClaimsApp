@@ -1,4 +1,4 @@
-package com.miracle.userlogin.jwt.payload;
+package com.miracle.login.jwt.payload;
 
 public class MessageResponse {
 	private String message;
