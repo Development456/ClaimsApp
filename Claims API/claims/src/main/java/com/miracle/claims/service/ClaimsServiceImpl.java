@@ -1,10 +1,12 @@
 package com.miracle.claims.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,15 +16,16 @@ import org.springframework.stereotype.Service;
 import com.miracle.claims.beans.Claim;
 import com.miracle.claims.repository.ClaimsRepository;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Component
 @Service
-@Slf4j
+//@Slf4j
 public class ClaimsServiceImpl implements ClaimsService {
 
 	@Autowired
 	ClaimsRepository claimsRepository;
+	
+	@Autowired
+	MongoOperations mongoOperations;
 
 	@Autowired
 	ClaimsSequenceGeneratorService claimsSeqGeneratorSvc;
@@ -30,9 +33,58 @@ public class ClaimsServiceImpl implements ClaimsService {
 	// get the list of all
 	@Override
 	public ResponseEntity<List<Claim>> getAllClaims() {
-		List<Claim> list = claimsRepository.findAll();
-		log.info("test log");
-		return new ResponseEntity<List<Claim>>(list, new HttpHeaders(), HttpStatus.OK);
+		
+		List<Claim> claim = claimsRepository.findAll();
+		return new ResponseEntity<List<Claim>>(claim , new HttpHeaders(), HttpStatus.OK);
+	}
+	
+	@Override
+	public ResponseEntity<List<Claim>> getAllClaimsFilter(Claim claim) {
+		
+		Query query = new Query();
+		List<Criteria> criteria = new ArrayList<>();
+		
+		if(claim.getClaimId() != null) {
+			criteria.add(Criteria.where("claim_id").is(claim.getClaimId()));
+		}
+		if(claim.getFacilityId() != null) {
+			criteria.add(Criteria.where("facility_id").is(claim.getFacilityId()));
+		}
+//		if(claim.getPalletQuantity() != 0) {
+//			criteria.add(Criteria.where("pallet_quantity").is(claim.getPalletQuantity()));
+//		}
+		
+		if(claim.getDocumentType() != null) {
+			criteria.add(Criteria.where("document_type").is(claim.getDocumentType()));
+		}
+		
+		if(claim.getClaimedAmount() != null ) {
+			criteria.add(Criteria.where("claimed_amount").is(claim.getClaimedAmount()));
+		}
+		
+//		if(claim.getServiceProviderClaimId() != 0) {
+//			criteria.add(Criteria.where("service_provider_claim_id").is(claim.getServiceProviderClaimId()));
+//		}
+		
+		if(claim.getClaimStatus() != null) {
+			criteria.add(Criteria.where("claim_status").is(claim.getClaimStatus()));
+		}
+		
+		if(claim.getClaimType() != null) {
+			criteria.add(Criteria.where("claim_type").is(claim.getClaimType()));
+		}
+		
+		if(claim.getCreatedDate() !=null ) {
+			criteria.add(Criteria.where("create_date").is(claim.getCreatedDate()));
+		}
+		//criteria.add(Criteria.where("claim").is(claim));
+		
+		//utility package //class constant //nothing 
+		query.addCriteria(new Criteria().andOperator(criteria.toArray(new Criteria[criteria.size()])));
+		List<Claim> filteredVals = mongoOperations.find(query, Claim.class);
+		System.out.println(filteredVals);
+		
+		return new ResponseEntity<List<Claim>>(filteredVals, new HttpHeaders(), HttpStatus.OK);
 	}
 
 	// post
@@ -140,13 +192,13 @@ public class ClaimsServiceImpl implements ClaimsService {
 
 	}
 	@Override
-	public ResponseEntity<List<Claim>> getClaimsByCreateDate(Date createdDate) {
+	public ResponseEntity<List<Claim>> getClaimsByCreateDate(String createDate) {
 		List<Claim> list = new ArrayList<>();
-		if(createdDate == null) {	
+		if(createDate == null) {	
 			claimsRepository.findAll().forEach(list::add);
 		}
 		else {
-			claimsRepository.findByCreateDate(createdDate).forEach(list::add);
+			claimsRepository.findByCreatedDate(createDate).forEach(list::add);
 		}	
 		return new ResponseEntity<List<Claim>>(list, new HttpHeaders(), HttpStatus.OK);
 	}
@@ -168,8 +220,10 @@ public class ClaimsServiceImpl implements ClaimsService {
 		return new ResponseEntity<List<Claim>>(list, new HttpHeaders(), HttpStatus.OK);
 	}
 
+	@Override//find a way by query
+	public ResponseEntity<List<Claim>> getAllMessagesPaginated(int start, int size) {
+		ArrayList<Claim> paginatedMsg = new ArrayList<Claim>(claimsRepository.findAll());
+		return new ResponseEntity<List<Claim>>(paginatedMsg.subList(start, start + size), new HttpHeaders(), HttpStatus.OK);
+	}
+
 }
-	
-
-
-
