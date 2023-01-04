@@ -1,11 +1,15 @@
-<div *ngIf="isLoading" class="snippet" data-title="dot-revolution">
-    <div class="stage">
-      <div class="dot-revolution"></div>
+<div>
+    <mat-card-header class="absolute-center text-center">
+        <mat-card-subtitle class="mb-0">Claims Breakdown by Status</mat-card-subtitle>
+    </mat-card-header>
+    <div *ngIf="isLoading" class="snippet" data-title="dot-revolution">
+        <div class="stage">
+          <div class="dot-revolution"></div>
+        </div>
     </div>
-</div>
-<mat-card-header class="absolute-center text-center">
-    <mat-card-subtitle class="mb-0">Claims Breakdown by Status</mat-card-subtitle>
-</mat-card-header>
-<div style="position: relative; height:auto">
-    <canvas baseChart [data]="doughnutChartData" [labels]="doughnutChartLabels" [chartType]="doughnutChartType" [options]="doughnutOptions" [colors]="doughnutChartColor" height="150px"></canvas>
+    <div *ngIf="!isLoading">
+        <div style="position: relative; height:auto">
+            <canvas baseChart [data]="doughnutChartData" [labels]="doughnutChartLabels" [chartType]="doughnutChartType" [options]="doughnutOptions" [colors]="doughnutChartColor" height="150px"></canvas>
+        </div>
+    </div>
 </div>

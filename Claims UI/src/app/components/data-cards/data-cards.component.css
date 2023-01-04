@@ -26,3 +26,12 @@
 ::ng-deep .cdk-overlay-pane {
     overflow:visible
 }
+
+.snippet {
+    margin-top: 5%;
+    height:50px !important;
+    max-width: 100%;
+    justify-content: center;
+    position: relative;
+    z-index: 1000;
+  }

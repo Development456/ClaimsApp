@@ -12,3 +12,12 @@
     text-align: left;
     padding-left: 3%;
 }
+
+.snippet {
+    margin-top: 25%;
+    height:200px !important;
+    max-width: 100%;
+    justify-content: center;
+    position: relative;
+    z-index: 1000;
+  }

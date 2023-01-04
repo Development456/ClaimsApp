@@ -11,6 +11,11 @@
         <h1>Claims Details</h1>
     </mat-card-subtitle>
 </mat-card-header>
+<div *ngIf="isLoading" class="snippet" data-title="dot-revolution">
+    <div class="stage">
+      <div class="dot-revolution"></div>
+    </div>
+</div>
 <br/>
 <div *ngIf="rows.length > 0 && showGrid" fxFlexFill fxLayout="column">
     <div fxFlex fxLayoutAlign="end start" fxLayoutGap="20px">

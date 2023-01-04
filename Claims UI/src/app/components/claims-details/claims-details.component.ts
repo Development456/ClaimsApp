@@ -38,6 +38,7 @@ export class ClaimsDetailsComponent implements OnInit, OnDestroy {
               private _snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
+    console.log('test', this.data.rowData)
     this.initializeForm();
     this.isLoading = true;
     this.userMode = localStorage.getItem('userDetails') ? localStorage.getItem('userDetails') : 'user';
