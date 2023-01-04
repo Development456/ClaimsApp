@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.miracle.claims.ClaimsApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 31.092 s - in com.miracle.claims.ClaimsApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 18.061 s - in com.miracle.claims.ClaimsApplicationTests
