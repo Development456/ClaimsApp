@@ -33,7 +33,7 @@ import io.swagger.annotations.ApiResponses;
  * The Class ClaimsController.
  */
 @RestController
-@CrossOrigin(origins="https://localhost:4200")
+@CrossOrigin(origins="*")
 @RequestMapping("/claims")
 public class ClaimsController {
 
