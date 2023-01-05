@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDrawer } from '@angular/material/sidenav';
+
 import { ClaimsMockData } from '../mock-data/claims-list-constant';
 import { DashboardClaimsData } from '../mock-data/dashboard-claims.constant';
+import { MatDrawer } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-dashboard',

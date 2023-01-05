@@ -1,9 +1,10 @@
-import { OrderList } from './components/mock-data/order-list.constant';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, catchError, of, throwError } from 'rxjs';
+
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
-import { catchError, of, throwError } from 'rxjs';
+import { OrderList } from './components/mock-data/order-list.constant';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -85,4 +86,10 @@ export class ClaimsApiService {
       return of([]);
     }));
   }
+
+  filterClaim(filterMap: any): Observable<any> {
+    console.log(filterMap)
+    const url = `http://localhost:8100/claims/filter`;
+    return this.http.get<any>(url, {...filterMap})
+  }  
 }
