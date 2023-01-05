@@ -210,31 +210,8 @@ export class DataTableComponent implements OnInit {
 	}
 
 	searchFilter() {
-		let filterMap = new Map<string, any>();
-
 		if (this.filterForm.dirty ){
-			if( this.filterForm.get('facilityId')?.value ){
-				filterMap.set('facilityId', this.filterForm.get('facilityId')?.value)
-			} 
-			if( this.filterForm.get('palletQuantity')?.value ) {
-				filterMap.set('palletQuantity', this.filterForm.get('palletQuantity')?.value)
-			}
-			if( this.filterForm.get('documentType')?.value ) {
-				filterMap.set('documentType', this.filterForm.get('documentType')?.value)
-			}
-			if( this.filterForm.get('claimedAmount')?.value ) {
-				filterMap.set('claimedAmount', this.filterForm.get('claimedAmount')?.value)
-			}
-			if( this.filterForm.get('serviceProviderClaimId')?.value ) {
-				filterMap.set('serviceProviderClaimId', this.filterForm.get('serviceProviderClaimId')?.value)
-			}
-			if( this.filterForm.get('claimStatus')?.value ) {
-				filterMap.set('claimStatus', this.filterForm.get('claimStatus')?.value)
-			}
-			if( this.filterForm.get('claimType')?.value ) {
-				filterMap.set('claimType', this.filterForm.get('claimType')?.value)
-			}
-			this.http.filterClaim(filterMap).subscribe((data: any) => {
+			this.http.filterClaim(this.filterForm).subscribe((data: any) => {
 				this.filteredRows = data.map((item: any, index: number) => {
 					if (!item.creationDate) {
 						item.creationDate = this.rows[index].date

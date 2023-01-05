@@ -88,8 +88,31 @@ export class ClaimsApiService {
   }
 
   filterClaim(filterMap: any): Observable<any> {
-    console.log(filterMap)
+    let headersParams = new HttpHeaders().set('content-type', 'application/json').set('Access-Control-Allow-Origin', '*');
+    
+    if( filterMap.get('facilityId')?.value ){
+      headersParams = headersParams.set('facilityId', filterMap.get('facilityId')?.value)
+    } 
+    if( filterMap.get('palletQuantity')?.value ) {
+      headersParams = headersParams.set('palletQuantity', filterMap.get('palletQuantity')?.value)
+    }
+    if( filterMap.get('documentType')?.value ) {
+      headersParams = headersParams.set('documentType', filterMap.get('documentType')?.value)
+    }
+    if( filterMap.get('claimedAmount')?.value ) {
+      headersParams = headersParams.set('claimedAmount', filterMap.get('claimedAmount')?.value)
+    }
+    if( filterMap.get('serviceProviderClaimId')?.value ) {
+      headersParams = headersParams.set('serviceProviderClaimId', filterMap.get('serviceProviderClaimId')?.value)
+    }
+    if( filterMap.get('claimStatus')?.value ) {
+      headersParams = headersParams.set('claimStatus', filterMap.get('claimStatus')?.value)
+    }
+    if( filterMap.get('claimType')?.value ) {
+      headersParams = headersParams.set('claimType', filterMap.get('claimType')?.value)
+    }
+
     const url = `http://localhost:8100/claims/filter`;
-    return this.http.get<any>(url, {...filterMap})
-  }  
+    return this.http.get<any>(url,  {headers: headersParams})
+  }
 }
