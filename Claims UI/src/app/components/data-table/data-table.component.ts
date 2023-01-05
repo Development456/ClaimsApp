@@ -210,8 +210,8 @@ export class DataTableComponent implements OnInit {
 	}
 
 	searchFilter() {
-		if (this.filterForm.dirty ){
-			this.http.filterClaim(this.filterForm).subscribe((data: any) => {
+		if (this.filterForm.dirty || this.campaignOne.dirty ){
+			this.http.filterClaim(this.filterForm, this.datepipe.transform(this.campaignOne.get('start')?.value, 'MM-dd-yyyy')).subscribe((data: any) => {
 				this.filteredRows = data.map((item: any, index: number) => {
 					if (!item.creationDate) {
 						item.creationDate = this.rows[index].date

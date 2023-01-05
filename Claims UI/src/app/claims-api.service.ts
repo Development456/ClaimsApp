@@ -87,14 +87,15 @@ export class ClaimsApiService {
     }));
   }
 
-  filterClaim(filterMap: any): Observable<any> {
-    let headersParams = new HttpHeaders().set('content-type', 'application/json').set('Access-Control-Allow-Origin', '*');
-    
+    filterClaim(filterMap: any, date: any): Observable<any> {
+
+    let headersParams = new HttpHeaders().set('content-type', 'application/json')
+    .set('Access-Control-Allow-Origin', '*');
     if( filterMap.get('facilityId')?.value ){
       headersParams = headersParams.set('facilityId', filterMap.get('facilityId')?.value)
     } 
     if( filterMap.get('palletQuantity')?.value ) {
-      headersParams = headersParams.set('palletQuantity', filterMap.get('palletQuantity')?.value)
+      headersParams = headersParams.set('palletQuantity', filterMap.get('palletQuantity')?.value.toString())
     }
     if( filterMap.get('documentType')?.value ) {
       headersParams = headersParams.set('documentType', filterMap.get('documentType')?.value)
@@ -110,6 +111,9 @@ export class ClaimsApiService {
     }
     if( filterMap.get('claimType')?.value ) {
       headersParams = headersParams.set('claimType', filterMap.get('claimType')?.value)
+    }
+    if( date ) {
+      headersParams = headersParams.set('createDate', date)
     }
 
     const url = `http://localhost:8100/claims/filter`;

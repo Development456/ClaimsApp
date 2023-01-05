@@ -178,9 +178,9 @@
             </mat-form-field>
         </span>
         <div class="float-end">
-            <button [disabled]="filterForm.errors" mat-raised-button color="basic" class="save" style="background-color: #00aae7; color: white;" (click)="searchFilter()"> <mat-icon>search</mat-icon>
+            <button [disabled]="filterForm.errors !== null &&  !campaignOne.dirty" mat-raised-button color="basic" class="save" style="background-color: #00aae7; color: white;" (click)="searchFilter()"> <mat-icon>search</mat-icon>
                 Search </button>
-            <button [disabled]="filterForm.errors" mat-raised-button color="primary" class="reset" (click)="resetFilterApplied()">
+            <button [disabled]="filterForm.errors !== null && !campaignOne.dirty" mat-raised-button color="primary" class="reset" (click)="resetFilterApplied()">
                 <mat-icon>refresh</mat-icon> Reset </button>
         </div>
     </mat-card>
