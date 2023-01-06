@@ -17,7 +17,7 @@ export class ClaimsApiService {
   }
 
   getCustomer() {
-    return this.http.get(`http://localhost:8400/customer`);
+    return this.http.get(`http://20.163.181.235:9200/customer`);
   }
 
   getCustomerReference() {
@@ -59,7 +59,7 @@ export class ClaimsApiService {
   }
 
   updateClaim(editedCalimsBody: any, serviceProviderId: number) {
-    const url = `http://localhost:8100/claims/${serviceProviderId}`;
+    const url = `http://20.163.181.235:9000/claims/${serviceProviderId}`;
     return this.http.put<any>(url, editedCalimsBody); 
   }
 }
