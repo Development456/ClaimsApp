@@ -13,11 +13,11 @@ export class ClaimsApiService {
   constructor(private http: HttpClient) { }
 
   getFacility() {
-    return this.http.get(environment.URL + `/facility`);
+    return this.http.get(environment.FACILITY_URL + `/facility`);
   }
 
   getCustomer() {
-    return this.http.get(`http://20.163.181.235:9002/customer`);
+    return this.http.get(environment.CUSTOMER_URL +`/customer`);
   }
 
   getCustomerReference() {
@@ -35,18 +35,18 @@ export class ClaimsApiService {
   }
 
   getClaims() {
-    return this.http.get(environment.URL + '/claims');
+    return this.http.get(environment.CLAIMS_URL + '/claims');
   }
 
   getClaimsById(id: string) {
-    return this.http.get(environment.URL + `/claims/${id}`);
+    return this.http.get(environment.CLAIMS_URL + `/claims/${id}`);
   }
 
   getClaimByFacility(id: string) {
     if (id) {
-      return this.http.get(environment.URL + `/claims/facility/${id}`);
+      return this.http.get(environment.CLAIMS_URL + `/claims/facility/${id}`);
     } else {
-      return this.http.get(environment.URL + `/claims`);
+      return this.http.get(environment.CLAIMS_URL + `/claims`);
     }
   }
 
@@ -55,11 +55,11 @@ export class ClaimsApiService {
     .set('content-type', 'application/json')
     .set('Access-Control-Allow-Origin', '*');
 
-    return this.http.post('http://20.163.181.235:9000/claims', claim,{headers});
+    return this.http.post(environment.CLAIMS_URL +'/claims', claim,{headers});
   }
 
   updateClaim(editedCalimsBody: any, serviceProviderId: number) {
-    const url = `http://20.163.181.235:9000/claims/${serviceProviderId}`;
+    const url = environment.CLAIMS_URL +`/claims/${serviceProviderId}`;
     return this.http.put<any>(url, editedCalimsBody); 
   }
 }
