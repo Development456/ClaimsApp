@@ -55,7 +55,7 @@ export class ClaimsApiService {
     .set('content-type', 'application/json')
     .set('Access-Control-Allow-Origin', '*');
 
-    return this.http.post('http://localhost:8100/claims', claim,{headers});
+    return this.http.post('http://20.163.181.235:9000/claims', claim,{headers});
   }
 
   updateClaim(editedCalimsBody: any, serviceProviderId: number) {
