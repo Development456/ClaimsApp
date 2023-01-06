@@ -1,6 +1,7 @@
 package com.miracle.facility.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +26,6 @@ import com.miracle.facility.service.FacilityServiceImpl;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-//import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -43,7 +44,7 @@ public class FacilityController {
 			)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(value = "health of facilities service", notes = "JSON Supported", response = Facility.class)
+	@ApiOperation(value = "Returns All Facility, Filtered", notes = "JSON Supported", response = Facility.class)
 	@ApiResponses({ @ApiResponse(code = 200, message = "success", response = Facility.class),
 			@ApiResponse(code = 400, message = "bad-request", response = ErrorDetails.class),
 			@ApiResponse(code = 401, message = "Unauthorized", response = ErrorDetails.class),
@@ -51,9 +52,58 @@ public class FacilityController {
 			@ApiResponse(code = 404, message = "Data not found", response = ErrorDetails.class),
 			@ApiResponse(code = 405, message = "Method not allowed", response = ErrorDetails.class),
 			@ApiResponse(code = 500, message = "Internal server error", response = ErrorDetails.class) })
-	@GetMapping("/facility/health")
-	public ResponseEntity<String> health() {
-		return new ResponseEntity<String>("The health is up", new HttpHeaders(), HttpStatus.OK);
+	@GetMapping("/filter")
+	public ResponseEntity<List<Facility>> getfilter(@RequestHeader Map<String, String> headers) {
+		Facility facility = new Facility();
+		headers.forEach((key,value)->{  
+			
+			if(key.equalsIgnoreCase("facilityId")) {
+				facility.setFacilityId(value);
+			}
+			else if(key.equalsIgnoreCase("addressLine1")) {
+				facility.setAddressLine1(value);
+			}
+			
+			else if(key.equalsIgnoreCase("addressLine2")) {
+				facility.setAddressLine2(value);
+			}
+			
+			else if(key.equalsIgnoreCase("addressLine3")) {
+				facility.setAddressLine3(value);
+			}
+			
+			else if(key.equalsIgnoreCase("city")) {
+				facility.setCity(value);
+			}
+			
+			else if(key.equalsIgnoreCase("facilityName")) {
+				facility.setFacilityName(value);
+			}
+			
+			else if(key.equalsIgnoreCase("postalCode")){
+				facility.setPostalCode(value);
+			}
+			
+			else if(key.equalsIgnoreCase("state")) {
+				facility.setState(value);
+			}
+			
+			else if(key.equalsIgnoreCase("country")) {
+				facility.setCountry(value);
+			}
+			
+			else if(key.equalsIgnoreCase("phone")) {
+				facility.setPhone(value);
+			}
+			
+			else if(key.equalsIgnoreCase("facilityManager")) {
+				facility.setFacilityManager(value);
+			}
+			else if(key.equalsIgnoreCase("category")) {
+				facility.setCategory(value);
+			}
+		});
+		return facilityServiceImpl.getAllFacilityFilter(facility);
 	}
 	
 	//get all 
@@ -76,7 +126,6 @@ public class FacilityController {
 	@GetMapping("/facility")
 	public ResponseEntity<List<Facility>> getAll() {
 		return facilityServiceImpl.getAll();
-		//return new ResponseEntity<ResponseEntity<List<Facility>>>(facility, new HttpHeaders(), HttpStatus.OK);
 	}
 	//get by facility id
 	@Timed(

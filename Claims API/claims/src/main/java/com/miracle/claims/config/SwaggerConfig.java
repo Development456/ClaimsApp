@@ -31,22 +31,22 @@ public class SwaggerConfig {
 	@Autowired
 	BeanFactory beanFactory;
 
-	/**
-	 * Published API.
-	 *
-	 * @return the docket
-	 */
-	@Bean
-	public Docket publishedAPI() {
-		if (envHostURL != null) {
-			return (new Docket(DocumentationType.SWAGGER_2)).host(envHostURL.concat("/").concat(appName))
-					.groupName("Claims Service").apiInfo(this.apiInfo()).select().paths(this.servicePaths())
-					.build();
-		} else {
-			return (new Docket(DocumentationType.SWAGGER_2)).groupName("Claims Service").apiInfo(this.apiInfo())
-					.select().paths(this.servicePaths()).build();
-		}
-	}
+    /**
+     * Published API.
+     *
+     * @return the docket
+     */
+    @Bean
+    Docket publishedAPI() {
+        if (envHostURL != null) {
+            return (new Docket(DocumentationType.SWAGGER_2)).host(envHostURL.concat("/").concat(appName))
+                    .groupName("Claims Service").apiInfo(this.apiInfo()).select().paths(this.servicePaths())
+                    .build();
+        } else {
+            return (new Docket(DocumentationType.SWAGGER_2)).groupName("Claims Service").apiInfo(this.apiInfo())
+                    .select().paths(this.servicePaths()).build();
+        }
+    }
 
 	/**
 	 * Service paths.

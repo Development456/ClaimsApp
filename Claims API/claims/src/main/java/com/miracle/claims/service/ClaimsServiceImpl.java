@@ -50,9 +50,6 @@ public class ClaimsServiceImpl implements ClaimsService {
 		if(claim.getFacilityId() != null) {
 			criteria.add(Criteria.where("facility_id").is(claim.getFacilityId()));
 		}
-//		if(claim.getPalletQuantity() != 0) {
-//			criteria.add(Criteria.where("pallet_quantity").is(claim.getPalletQuantity()));
-//		}
 		
 		if(claim.getDocumentType() != null) {
 			criteria.add(Criteria.where("document_type").is(claim.getDocumentType()));
@@ -61,10 +58,6 @@ public class ClaimsServiceImpl implements ClaimsService {
 		if(claim.getClaimedAmount() != null ) {
 			criteria.add(Criteria.where("claimed_amount").is(claim.getClaimedAmount()));
 		}
-		
-//		if(claim.getServiceProviderClaimId() != 0) {
-//			criteria.add(Criteria.where("service_provider_claim_id").is(claim.getServiceProviderClaimId()));
-//		}
 		
 		if(claim.getClaimStatus() != null) {
 			criteria.add(Criteria.where("claim_status").is(claim.getClaimStatus()));
@@ -77,12 +70,10 @@ public class ClaimsServiceImpl implements ClaimsService {
 		if(claim.getCreatedDate() !=null ) {
 			criteria.add(Criteria.where("create_date").is(claim.getCreatedDate()));
 		}
-		//criteria.add(Criteria.where("claim").is(claim));
 		
 		//utility package //class constant //nothing 
 		query.addCriteria(new Criteria().andOperator(criteria.toArray(new Criteria[criteria.size()])));
 		List<Claim> filteredVals = mongoOperations.find(query, Claim.class);
-		System.out.println(filteredVals);
 		
 		return new ResponseEntity<List<Claim>>(filteredVals, new HttpHeaders(), HttpStatus.OK);
 	}

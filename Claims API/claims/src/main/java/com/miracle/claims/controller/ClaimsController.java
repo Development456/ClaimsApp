@@ -64,7 +64,7 @@ public class ClaimsController {
 			@ApiResponse(code = 404, message = "Data not found", response = ErrorDetails.class),
 			@ApiResponse(code = 405, message = "Method not allowed", response = ErrorDetails.class),
 			@ApiResponse(code = 500, message = "Internal server error", response = ErrorDetails.class) })
-	@GetMapping("/claims")
+	@GetMapping("")
 	public ResponseEntity<List<Claim>> getAllClaims() {
 		return claimsServices.getAllClaims();
 	}
@@ -88,7 +88,6 @@ public class ClaimsController {
 			@ApiResponse(code = 500, message = "Internal server error", response = ErrorDetails.class) })
 	@GetMapping("/filter")
 	public ResponseEntity<List<Claim>> getfilter(@RequestHeader Map<String, String> headers) {
-		//System.out.println(claim);
 		Claim claim = new Claim();
 		headers.forEach((key,value)->{  
 			
@@ -137,6 +136,7 @@ public class ClaimsController {
 		});
 		return claimsServices.getAllClaimsFilter(claim);
 	}
+	
 	/**
 	 * Gets the claims by service provider claim id.
 	 *
