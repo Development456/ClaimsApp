@@ -4,16 +4,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { AuthGuard } from './auth.guard';
 import { BarChartComponent } from './components/bar-chart/bar-chart.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { ChartsModule } from 'ng2-charts';
 import { ClaimsApiService } from './claims-api.service';
 import { ClaimsDetailsComponent } from './components/claims-details/claims-details.component';
-import { AuthGuard } from './auth.guard';
-import { ToastrModule } from 'ngx-toastr';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { DataCardsComponent } from './components/data-cards/data-cards.component';
+import { DatePipe } from '@angular/common';
 import { DetailsModalComponent } from './components/data-table/details-modal/details-modal.component';
 import { DoughnutChartComponent } from './components/doughnut-chart/doughnut-chart.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -46,6 +46,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgModule } from '@angular/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgxPrintModule } from 'ngx-print';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -118,7 +119,7 @@ import { NgxPrintModule } from 'ngx-print';
     MatGridListModule,
     MatSelectModule
   ],
-  providers: [ClaimsApiService, AuthGuard],
+  providers: [ClaimsApiService, AuthGuard, DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
