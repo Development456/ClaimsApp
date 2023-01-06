@@ -17,7 +17,7 @@ export class ClaimsApiService {
   }
 
   getCustomer() {
-    return this.http.get(`http://20.163.181.235:9200/customer`);
+    return this.http.get(`http://20.163.181.235:9002/customer`);
   }
 
   getCustomerReference() {
