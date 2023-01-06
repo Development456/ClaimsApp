@@ -35,7 +35,7 @@ export class ClaimsApiService {
   }
 
   getClaims() {
-    return this.http.get(environment.CLAIMS_URL + '/claims');
+    return this.http.get(environment.CLAIMS_URL + '/claims/getclaims');
   }
 
   getClaimsById(id: string) {
@@ -46,7 +46,7 @@ export class ClaimsApiService {
     if (id) {
       return this.http.get(environment.CLAIMS_URL + `/claims/facility/${id}`);
     } else {
-      return this.http.get(environment.CLAIMS_URL + `/claims`);
+      return this.http.get(environment.CLAIMS_URL + `/claims/getclaims`);
     }
   }
 
