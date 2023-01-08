@@ -1,6 +1,6 @@
 FROM maven:3.6.0-jdk-11 AS build
 
-LABEL maintainer = "APURVA BANSODE"
+LABEL maintainer = "Apurva Bansode"
 
 # Copy folder in docker
 WORKDIR /opt/app
