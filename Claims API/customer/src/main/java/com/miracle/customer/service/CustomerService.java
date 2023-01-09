@@ -10,6 +10,7 @@ import com.miracle.customer.model.Customer;
 public interface CustomerService {
 	
 	public ResponseEntity<List<Customer>> getAllCustomers();
+	public ResponseEntity<List<Customer>> getAllCustomerFilter(Customer customer);
 	public ResponseEntity<Customer> createCustomer(Customer customer);
 	public String deleteCustomer(Long customerId);
 	public ResponseEntity<Customer> updateCustomer(Long CustomerId, Customer customer);

@@ -7,6 +7,9 @@ import org.springframework.http.ResponseEntity;
 import com.miracle.facility.entity.Facility;
 
 public interface FacilityService {
+	
+		//get by filter
+		public ResponseEntity<List<Facility>> getAllFacilityFilter(Facility facility);
 		
 		// get all facility
 		public ResponseEntity<List<Facility>> getAll(); 

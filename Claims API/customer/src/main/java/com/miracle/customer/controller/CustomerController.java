@@ -1,6 +1,7 @@
 package com.miracle.customer.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +23,7 @@ import com.miracle.customer.exception.ErrorDetails;
 import com.miracle.customer.model.Customer;
 import com.miracle.customer.service.CustomerServiceImpl;
 
+import io.micrometer.core.annotation.Timed;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -33,28 +36,17 @@ public class CustomerController {
 	@Autowired
 	private CustomerServiceImpl customerServices;
 	
-	@ResponseBody
-	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(value = "returns the health", notes = "JSON Supported", response = Customer.class)
-	@ApiResponses({ @ApiResponse(code = 200, message = "success", response = Customer.class),
-			@ApiResponse(code = 400, message = "bad-request", response = ErrorDetails.class),
-			@ApiResponse(code = 401, message = "Unauthorized", response = ErrorDetails.class),
-			@ApiResponse(code = 403, message = "Customers service requires authentication - please check username and password", response = ErrorDetails.class),
-			@ApiResponse(code = 404, message = "Data not found", response = ErrorDetails.class),
-			@ApiResponse(code = 405, message = "Method not allowed", response = ErrorDetails.class),
-			@ApiResponse(code = 500, message = "Internal server error", response = ErrorDetails.class) })
-	@GetMapping("/customer/health")
-	public ResponseEntity<String> health() {
-		return new ResponseEntity<String>("Customer Application is running, yay!!!", new HttpHeaders(), HttpStatus.OK);
-	}
-
-	
 	/**
 	 * Gets all customers.
 	 *
 	 * @returns all customers
 	 */
-	
+	@Timed(
+			value = "customer.getAll",
+			histogram = true,
+			percentiles = {0.95, 0.99},
+			extraTags = {"version", "1.0"}
+			)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "Returns All Customer details", notes = "JSON Supported", response = Customer.class)
@@ -69,12 +61,97 @@ public class CustomerController {
 	public ResponseEntity<List<Customer>> getAllCustomers() {
 		return customerServices.getAllCustomers();
 	}
+	
+	
+	@Timed(
+			value = "customer.getAll",
+			histogram = true,
+			percentiles = {0.95, 0.99},
+			extraTags = {"version", "1.0"}
+			)
+	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
+	@ApiOperation(value = "Returns All Customer, Filtered", notes = "JSON Supported", response = Customer.class)
+	@ApiResponses({ @ApiResponse(code = 200, message = "success", response = Customer.class),
+			@ApiResponse(code = 400, message = "bad-request", response = ErrorDetails.class),
+			@ApiResponse(code = 401, message = "Unauthorized", response = ErrorDetails.class),
+			@ApiResponse(code = 403, message = "Facility service requires authentication - please check username and password", response = ErrorDetails.class),
+			@ApiResponse(code = 404, message = "Data not found", response = ErrorDetails.class),
+			@ApiResponse(code = 405, message = "Method not allowed", response = ErrorDetails.class),
+			@ApiResponse(code = 500, message = "Internal server error", response = ErrorDetails.class) })
+	@GetMapping("/filter")
+	public ResponseEntity<List<Customer>> getfilter(@RequestHeader Map<String, String> headers) {
+		Customer customer = new Customer();
+		headers.forEach((key,value)->{  
+			
+			if(key.equalsIgnoreCase("name")) {
+				customer.setName(value);
+			}
+			else if(key.equalsIgnoreCase("addressLine1")) {
+				customer.setAddressLine1(value);
+			}
+			
+			else if(key.equalsIgnoreCase("addressLine2")) {
+				customer.setAddressLine2(value);
+			}
+			
+			else if(key.equalsIgnoreCase("addressLine3")) {
+				customer.setAddressLine3(value);
+			}
+			
+			else if(key.equalsIgnoreCase("city")) {
+				customer.setCity(value);
+			}
+			
+			else if(key.equalsIgnoreCase("state")) {
+				customer.setState(value);
+			}
+			
+			else if(key.equalsIgnoreCase("postalCode")){
+				customer.setPostalCode(value);
+			}
+			
+			else if(key.equalsIgnoreCase("country")) {
+				customer.setCountry(value);
+			}
+			
+			else if(key.equalsIgnoreCase("phone")) {
+				customer.setPhone(value);
+			}
+			
+			else if(key.equalsIgnoreCase("fax")) {
+				customer.setFax(value);
+			}
+			else if(key.equalsIgnoreCase("email")) {
+				customer.setEmail(value);
+			}
+			else if(key.equalsIgnoreCase("creator_id")) {
+				customer.setCreatorId(value);
+			}
+			else if(key.equalsIgnoreCase("last_updator_id")) {
+				customer.setLastUpdatorId(value);
+			}
+			else if(key.equalsIgnoreCase("create_date")) {
+				customer.setCreateDate(value);
+			}
+			else if(key.equalsIgnoreCase("last_update_date")) {
+				customer.setLastUpdateDate(value);
+			}
+		});
+		return customerServices.getAllCustomerFilter(customer);
+	}
 	/**
 	 * Gets the customer by customer id.
 	 *
 	 * @param customerId the customer id
 	 * @return the customer by customer id
 	 */
+	@Timed(
+			value = "customer.getAll",
+			histogram = true,
+			percentiles = {0.95, 0.99},
+			extraTags = {"version", "1.0"}
+			)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "Get Customer By customer Id", notes = "JSON Supported", response = Customer.class)
@@ -98,6 +175,12 @@ public class CustomerController {
 	 * @param Customer the Customer
 	 * @return the response entity
 	 */
+	@Timed(
+			value = "customer.getAll",
+			histogram = true,
+			percentiles = {0.95, 0.99},
+			extraTags = {"version", "1.0"}
+			)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "Create Customer", notes = "JSON Supported", response = Customer.class)
@@ -121,6 +204,12 @@ public class CustomerController {
 	 * @param Customer   the Customer
 	 * @return the response entity
 	 */
+	@Timed(
+			value = "customer.getAll",
+			histogram = true,
+			percentiles = {0.95, 0.99},
+			extraTags = {"version", "1.0"}
+			)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "Update Customer", notes = "JSON Supported", response = Customer.class)
@@ -144,6 +233,12 @@ public class CustomerController {
 	 * @param CustomerId the Customer id
 	 * @return the string
 	 */
+	@Timed(
+			value = "customer.getAll",
+			histogram = true,
+			percentiles = {0.95, 0.99},
+			extraTags = {"version", "1.0"}
+			)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "Delete Customer", notes = "JSON Supported", response = Customer.class)
