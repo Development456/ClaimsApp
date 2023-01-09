@@ -1,0 +1,45 @@
+node{
+      def dockerImageName= 'apurva09/eurekaserver2_$JOB_NAME:$BUILD_NUMBER'
+      stage('SCM Checkout'){
+         git 'https://github.com/LovesCloud/java-groovy-docker'
+      }
+      stage('Build'){
+         // Get maven home path and build
+         def mvnHome =  tool name: 'Maven 3.6.0', type: 'maven'   
+         sh "${mvnHome}/bin/mvn package -Dmaven.test.skip=true"
+      }       
+     
+     stage ('Test'){
+         def mvnHome =  tool name: 'Maven 3.6.0', type: 'maven'    
+         sh "${mvnHome}/bin/mvn verify; sleep 3"
+      }
+      
+     stage('Build Docker Image'){         
+           sh "docker build -t ${eurekaserver2img} ."
+      }  
+   
+      stage('Publish Docker Image'){
+         withCredentials([string(credentialsId: 'Apurva@09', variable: 'dockerPWDaps')]) {
+              sh "docker login -u apurv09 -p ${dockerPWDaps}"
+         }
+        sh "docker push ${eurekaserver2img}"
+      }
+      
+    stage('Run Docker Image'){
+            def dockerContainerName = 'eurekaserver_$JOB_NAME_$BUILD_NUMBER'
+            def changingPermission='sudo chmod +x stopscript.sh'
+            def scriptRunner='sudo ./stopscript.sh'           
+            def dockerRun= "sudo docker run -p 8761:8761 -d --name ${eurekaserver} ${eurekaserver2img}" 
+            withCredentials([string(credentialsId: 'Miracle\@1234', variable: 'dpPWD')]) {
+                  sh "sshpass -p ${dpPWD} ssh -o StrictHostKeyChecking=no azureuser@20.163.181.235" 
+                  sh "sshpass -p ${dpPWD} scp -r stopscript.sh azureuser@20.163.181.235:/home/devops" 
+                  sh "sshpass -p ${dpPWD} ssh -o StrictHostKeyChecking=no azureuser@20.163.181.235 ${changingPermission}"
+                  sh "sshpass -p ${dpPWD} ssh -o StrictHostKeyChecking=no azureuser@20.163.181.235 ${scriptRunner}"
+                  sh "sshpass -p ${dpPWD} ssh -o StrictHostKeyChecking=no azureuser@20.163.181.235 ${dockerRun}"
+            }
+            
+      
+      }
+      
+         
+  }
