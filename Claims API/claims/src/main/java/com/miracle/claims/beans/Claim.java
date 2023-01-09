@@ -54,6 +54,10 @@ public class Claim {
 	@ApiModelProperty(required = true, value = "claim amount", name = "claimedAmount", dataType = "String", example = "1234")
 	@Field("claimed_amount")
 	private String claimedAmount;
+	
+	@ApiModelProperty(required = true, value = "paid amount", name = "paidAmount", dataType = "String", example = "1234")
+	@Field("paid_amount")
+	private String paidAmount;
 
 	@ApiModelProperty(required = false, value = "service provider claim id", name = "serviceProviderClaimId", dataType = "Long", example = "1100")
 	@Field("service_provider_claim_id")
@@ -94,7 +98,7 @@ public class Claim {
 	public String toString() {
 		return "Claim [id=" + _id + ", claimId=" + claimId + ", facilityId=" + facilityId + ", palletQuantity="
 				+ palletQuantity + ", documentType=" + documentType + ", claimedAmount=" + claimedAmount
-				+ ", serviceProviderClaimId=" + serviceProviderClaimId + ", claimStatus=" + claimStatus + ", claimType="
+				+ ",paidAmount=" + paidAmount + ",serviceProviderClaimId=" + serviceProviderClaimId + ", claimStatus=" + claimStatus + ", claimType="
 				+ claimType + ", creatorId=" + creatorId + ", closedDate=" + closedDate + ",lastUpdateId="
 				+ lastUpdateId +  "createdDate=" + createdDate +"]";
 	}

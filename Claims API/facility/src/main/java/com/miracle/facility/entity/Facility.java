@@ -74,6 +74,10 @@ public class Facility {
 	@ApiModelProperty(required = true, value = "category of the facility", name = "category", dataType = "String", example = "Blast Freezing")
 	@Field("category")
 	private String category;
+	
+	@ApiModelProperty(required = true, value = "create date", name = "created date", dataType = "String", example = "")
+	@Field("create_date")
+	private String createdDate;
 
 	public String getId() {
 		return _id;
