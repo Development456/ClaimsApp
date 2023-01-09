@@ -1,6 +1,5 @@
 package com.miracle.claims.beans;
 
-import java.util.Date;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -86,7 +85,7 @@ public class Claim {
 	@ApiModelProperty(required = false, value = "create date", name = "createDate", dataType = "Date", example = "16-OCT-2022 03.12.36.898000000 PM")
 	@Field("create_date")
 	@CreatedDate
-	private Date createdDate ;
+	private String createdDate ;
 
 	@ApiModelProperty(required = false, value = "last update date", name = "lastUpdateDate", dataType = "String", example = "10-NOV-2022 03.12.36.898000000 PM")
 	@Field("last_update_date")

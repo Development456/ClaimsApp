@@ -1,7 +1,7 @@
 package com.miracle.claims.controller;
 
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,6 +25,7 @@ import com.miracle.claims.beans.Claim;
 import com.miracle.claims.exception.ErrorDetails;
 import com.miracle.claims.service.ClaimsServiceImpl;
 
+import io.micrometer.core.annotation.Timed;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -46,6 +48,12 @@ public class ClaimsController {
 	 *
 	 * @return the all claims
 	 */
+	@Timed(
+			value = "claims.getAll",
+			histogram = true,
+			percentiles = {0.95, 0.99},
+			extraTags = {"version", "1.0"}
+			)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "Returns All Claims", notes = "JSON Supported", response = Claim.class)
@@ -60,13 +68,87 @@ public class ClaimsController {
 	public ResponseEntity<List<Claim>> getAllClaims() {
 		return claimsServices.getAllClaims();
 	}
-
+	
+	
+	@Timed(
+			value = "claims.getAll",
+			histogram = true,
+			percentiles = {0.95, 0.99},
+			extraTags = {"version", "1.0"}
+			)
+	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
+	@ApiOperation(value = "Returns All Claims", notes = "JSON Supported", response = Claim.class)
+	@ApiResponses({ @ApiResponse(code = 200, message = "success", response = Claim.class),
+			@ApiResponse(code = 400, message = "bad-request", response = ErrorDetails.class),
+			@ApiResponse(code = 401, message = "Unauthorized", response = ErrorDetails.class),
+			@ApiResponse(code = 403, message = "Claims service requires authentication - please check username and password", response = ErrorDetails.class),
+			@ApiResponse(code = 404, message = "Data not found", response = ErrorDetails.class),
+			@ApiResponse(code = 405, message = "Method not allowed", response = ErrorDetails.class),
+			@ApiResponse(code = 500, message = "Internal server error", response = ErrorDetails.class) })
+	@GetMapping("/filter")
+	public ResponseEntity<List<Claim>> getfilter(@RequestHeader Map<String, String> headers) {
+		Claim claim = new Claim();
+		headers.forEach((key,value)->{  
+			
+			if(key.equalsIgnoreCase("claimId")) {
+				claim.setClaimId(value);
+			}
+			else if(key.equalsIgnoreCase("facilityId")) {
+				claim.setFacilityId(value);
+			}
+			
+			else if(key.equalsIgnoreCase("palletQuantity")) {
+				claim.setPalletQuantity(null!=value?Integer.parseInt(value):0);
+			}
+			
+			else if(key.equalsIgnoreCase("documentType")) {
+				claim.setDocumentType(value);
+			}
+			
+			else if(key.equalsIgnoreCase("claimedAmount")) {
+				claim.setClaimedAmount(value);
+			}
+			
+			else if(key.equalsIgnoreCase("serviceProviderClaimId")) {
+				claim.setServiceProviderClaimId(Long.parseLong(value));
+			}
+			
+			else if(key.equalsIgnoreCase("claimStatus")){
+				claim.setClaimStatus(value);
+			}
+			
+			else if(key.equalsIgnoreCase("claimType")) {
+				claim.setClaimType(value);
+			}
+			
+			else if(key.equalsIgnoreCase("lastUpdateId")) {
+				claim.setLastUpdateId(value);
+			}
+			
+			else if(key.equalsIgnoreCase("createDate")) {
+				claim.setCreatedDate(value);
+			}
+			
+			else if(key.equalsIgnoreCase("lastUpdateDate")) {
+				claim.setLastUpdateDate(value);
+			}
+		});
+		return claimsServices.getAllClaimsFilter(claim);
+	}
+	
 	/**
 	 * Gets the claims by service provider claim id.
 	 *
 	 * @param serviceProviderClaimId the service provider claim id
 	 * @return the claims by service provider claim id
 	 */
+	@Timed(
+			value = "claims.getAll",
+			histogram = true,
+			percentiles = {0.95, 0.99},
+			extraTags = {"version", "1.0"}
+			)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "Get Claim By Service Provider Claim Id", notes = "JSON Supported", response = Claim.class)
@@ -90,6 +172,12 @@ public class ClaimsController {
 	 * @param claim the claim
 	 * @return the response entity
 	 */
+	@Timed(
+			value = "claims.getAll",
+			histogram = true,
+			percentiles = {0.95, 0.99},
+			extraTags = {"version", "1.0"}
+			)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "Create Claim", notes = "JSON Supported", response = Claim.class)
@@ -113,6 +201,12 @@ public class ClaimsController {
 	 * @param claim   the claim
 	 * @return the response entity
 	 */
+	@Timed(
+			value = "claims.getAll",
+			histogram = true,
+			percentiles = {0.95, 0.99},
+			extraTags = {"version", "1.0"}
+			)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "Update Claim", notes = "JSON Supported", response = Claim.class)
@@ -136,6 +230,12 @@ public class ClaimsController {
 	 * @param claimId the claim id
 	 * @return the string
 	 */
+	@Timed(
+			value = "claims.getAll",
+			histogram = true,
+			percentiles = {0.95, 0.99},
+			extraTags = {"version", "1.0"}
+			)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "Delete Claim", notes = "JSON Supported", response = Claim.class)
@@ -158,7 +258,12 @@ public class ClaimsController {
 	 * @param customerClaimId the customer claim id
 	 * @return the claims by customer claim id
 	 */
-	
+	@Timed(
+			value = "claims.getAll",
+			histogram = true,
+			percentiles = {0.95, 0.99},
+			extraTags = {"version", "1.0"}
+			)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "Get Claims By Customer Claim Id", notes = "JSON Supported", response = Claim.class)
@@ -182,6 +287,12 @@ public class ClaimsController {
 	 * @param facilityId the facility id
 	 * @return the claims by facility id
 	 */
+	@Timed(
+			value = "claims.getAll",
+			histogram = true,
+			percentiles = {0.95, 0.99},
+			extraTags = {"version", "1.0"}
+			)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "Get Claims By Facility Id", notes = "JSON Supported", response = Claim.class)
@@ -202,6 +313,12 @@ public class ClaimsController {
 	 * Gets all the claims by claim status.
 	 * @return all the claims by claim status
 	 */
+	@Timed(
+			value = "claims.getAll",
+			histogram = true,
+			percentiles = {0.95, 0.99},
+			extraTags = {"version", "1.0"}
+			)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "Returns All Claims status", notes = "JSON Supported", response = Claim.class)
@@ -224,6 +341,12 @@ public class ClaimsController {
 	 * @param claimStatus the claim status
 	 * @return the claims by claim status
 	 */
+	@Timed(
+			value = "claims.getAll",
+			histogram = true,
+			percentiles = {0.95, 0.99},
+			extraTags = {"version", "1.0"}
+			)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "Get Claims By Status", notes = "JSON Supported", response = Claim.class)
@@ -246,6 +369,12 @@ public class ClaimsController {
 	 * @param claimType the claim type
 	 * @return the claims by claim type
 	 */
+	@Timed(
+			value = "claims.getAll",
+			histogram = true,
+			percentiles = {0.95, 0.99},
+			extraTags = {"version", "1.0"}
+			)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "Get Claims By Type", notes = "JSON Supported", response = Claim.class)
@@ -268,6 +397,12 @@ public class ClaimsController {
 	 * @param documentType the document type
 	 * @return the claims by document type
 	 */
+	@Timed(
+			value = "claims.getAll",
+			histogram = true,
+			percentiles = {0.95, 0.99},
+			extraTags = {"version", "1.0"}
+			)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "Get Claims By Document Type", notes = "JSON Supported", response = Claim.class)
@@ -313,6 +448,12 @@ public class ClaimsController {
 	 * @param closedDate the closed date
 	 * @return the claims by closed date
 	 */
+	@Timed(
+			value = "claims.getAll",
+			histogram = true,
+			percentiles = {0.95, 0.99},
+			extraTags = {"version", "1.0"}
+			)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "Get Claims By Closed Date", notes = "JSON Supported", response = Claim.class)
@@ -335,6 +476,12 @@ public class ClaimsController {
 	 * @param createDate the create date
 	 * @return the claims by create date
 	 */
+	@Timed(
+			value = "claims.getAll",
+			histogram = true,
+			percentiles = {0.95, 0.99},
+			extraTags = {"version", "1.0"}
+			)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "Get Claims By Create Date", notes = "JSON Supported", response = Claim.class)
@@ -347,7 +494,7 @@ public class ClaimsController {
 			@ApiResponse(code = 500, message = "Internal server error", response = ErrorDetails.class) })
 	@GetMapping("/createddate/{createdDate}")
 	public ResponseEntity<List<Claim>> getClaimsByCreateDate(
-			@ApiParam(value = "Claim Create Date", required = true) @PathVariable("createdDate") Date createdDate) {
+			@ApiParam(value = "Claim Create Date", required = true) @PathVariable("createdDate") String createdDate) {
 		return claimsServices.getClaimsByCreateDate(createdDate);
 	}
 

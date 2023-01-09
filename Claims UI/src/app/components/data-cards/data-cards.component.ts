@@ -86,8 +86,8 @@ export class DataCardsComponent implements OnInit {
       if (!data.length) {
         this.customers = 1;
         this.claims = 1;
-        this.claimAmount += Number(data.claimedAmount.replace(',', ''));
-        this.paidAmount += Number(data.claimedAmount.replace(',', ''));
+        this.claimAmount += Number(data?.claimedAmount?.replace(',', ''));
+        this.paidAmount += Number(data?.claimedAmount?.replace(',', ''));
       } else {
         this.claims = data.length;
         this.customers = data;

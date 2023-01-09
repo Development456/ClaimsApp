@@ -21,3 +21,11 @@
     position: relative;
     z-index: 1000;
   }
+
+  .save {
+    margin-right: 16px;
+  }
+
+  .buttons {
+    margin-top: 16px;
+  }

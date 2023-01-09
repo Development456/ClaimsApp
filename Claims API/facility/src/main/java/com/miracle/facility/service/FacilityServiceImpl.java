@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,60 @@ public class FacilityServiceImpl implements FacilityService {
 	
 	@Autowired
 	MongoTemplate mongoTemplate;
+	
+	@Autowired
+	MongoOperations mongoOperations;
+	
+	//get facility filter
+	@Override
+	public ResponseEntity<List<Facility>> getAllFacilityFilter(Facility facility){
+		Query query = new Query();
+		
+		List<Criteria> criteria = new ArrayList<>();
+		
+		if(facility.getFacilityId() != null) {
+			criteria.add(Criteria.where("facility_id").is(facility.getFacilityId()));
+		}
+		if(facility.getAddressLine1() != null) {
+			criteria.add(Criteria.where("address_line_1").is(facility.getAddressLine1()));
+		}
+		if(facility.getAddressLine2() != null) {
+			criteria.add(Criteria.where("address_line_2").is(facility.getAddressLine2()));
+		}
+		if(facility.getAddressLine3() != null) {
+			criteria.add(Criteria.where("address_line_3").is(facility.getAddressLine3()));
+		}
+		if(facility.getCity() != null) {
+			criteria.add(Criteria.where("city").is(facility.getCity()));
+		}
+		if(facility.getFacilityName() != null) {
+			criteria.add(Criteria.where("facility_name").is(facility.getFacilityName()));
+		}
+		if(facility.getPostalCode() != null) {
+			criteria.add(Criteria.where("postal_code").is(facility.getPostalCode()));
+		}
+		if(facility.getState() != null) {
+			criteria.add(Criteria.where("state").is(facility.getState()));
+		}
+		if(facility.getCountry() != null) {
+			criteria.add(Criteria.where("country").is(facility.getCountry()));
+		}
+		if(facility.getPhone() != null) {
+			criteria.add(Criteria.where("phone").is(facility.getPhone()));
+		}
+		if(facility.getFacilityManager() != null) {
+			criteria.add(Criteria.where("facility_manager").is(facility.getFacilityManager()));
+		}
+		if(facility.getCategory() != null) {
+			criteria.add(Criteria.where("category").is(facility.getCategory()));
+		}
+		query.addCriteria(new Criteria().andOperator(criteria.toArray(new Criteria[criteria.size()])));
+		List<Facility> filteredVals = mongoOperations.find(query, Facility.class);
+		
+		return new ResponseEntity<List<Facility>>(filteredVals, new HttpHeaders(), HttpStatus.OK);
+		
+	}
+
 
 	// get all facility
 	@Override

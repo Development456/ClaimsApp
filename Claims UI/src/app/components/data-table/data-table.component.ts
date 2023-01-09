@@ -2,16 +2,16 @@ import * as XLSX from 'xlsx';
 
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ColumnMode, SelectionType } from '@swimlane/ngx-datatable';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { FormBuilder, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 
 import { AddClaimColumns } from '../mock-data/add-claim-columns.constant';
 import { ClaimsApiService } from 'src/app/claims-api.service';
 import { ClaimsDetailsComponent } from '../claims-details/claims-details.component';
 import { ClaimsHomeTableColumns } from '../mock-data/claims-home-columns.constants';
+import { DatePipe } from '@angular/common'
 import { DetailsModalComponent } from "./details-modal/details-modal.component"
+import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
-import { ViewEncapsulation } from '@angular/core';
 import { zip } from 'rxjs';
 
 const today = new Date();
@@ -58,39 +58,22 @@ export class DataTableComponent implements OnInit {
 	filteredRowsAutoFill: any = {};
 	storedRows: any = [];
 	isLoading: boolean = false;
+	filterForm!: FormGroup;
+	facilityList: any = [];
+	customerList: any = [];
+	filtersOption: any = {};
+	resetValue = new FormControl();
 
-	constructor(public dialog: MatDialog, private http: ClaimsApiService, private cd: ChangeDetectorRef) {
+	constructor(public dialog: MatDialog, private http: ClaimsApiService,
+		 private cd: ChangeDetectorRef, 
+		 private _formBuilder: FormBuilder,
+		 public datepipe: DatePipe) {
 	}
 	ngOnInit(): void {
-		this.isLoading = true;
 		this.showGrid = false;
 		this.filteredColumns = this.columns.filter(column => column.show === true);
-		this.http.getClaimByFacility(this.facilityChange).subscribe((data: any) => {
-			this.isLoading = false;
-			// this.rows = data;
-			if (data.length > 0) {
-				data = data.reverse();
-
-			}
-			this.storedRows = data.map((item: any, index: number) => {
-				if (!item.creationDate) {
-					item.creationDate = this.rows[index].date
-				}
-				item.claimedAmount = Number(item.claimedAmount ? item.claimedAmount : 0);
-
-				return { ...this.rows[index], ...item }
-			});
-			this.filteredRows = data.map((item: any, index: number) => {
-				if (!item.creationDate) {
-					item.creationDate = this.rows[index].date
-				}
-				item.claimedAmount = '$' + Number(item.claimedAmount ? item.claimedAmount : 0);
-
-				return { ...this.rows[index], ...item }
-			});
-			this.showGrid = true;
-
-		});
+		this.filterColumnsForm();
+		this.getFacilityChange();
 		this.cd.markForCheck();
 
 		this.filteredRowsAutoFill = this.columns.map((item: any) => item.props);
@@ -102,7 +85,6 @@ export class DataTableComponent implements OnInit {
 
 					let lowDate = new Date(data.start);
 					let highDate = new Date(data.end);
-					console.log(highDate.getTime());
 
 					if (dateCheck.getTime() <= highDate.getTime() && dateCheck.getTime() >= lowDate.getTime()) {
 						return true;
@@ -111,6 +93,39 @@ export class DataTableComponent implements OnInit {
 			}
 		})
 	}
+	
+	filterColumnsForm() {
+		this.filterForm = this._formBuilder.group({
+			claimStatus: [''],
+			masterAcct: [''],
+			documentType: [''],
+			facilityId: [''],
+			account: [''],
+			serviceProviderClaimId: [''],
+			claimType: [''],
+			category: [''],
+			palletQuantity: [''],
+			claimedAmount: [''],
+			paidAmount: [''],
+			carrier: [''],
+			loadNumber: ['']
+		},  { validators: this.atLeastOneValidator })
+	}
+
+	public atLeastOneValidator: any = (control: FormGroup): ValidationErrors | null => {
+		let controls = control.controls;
+		if (controls) {
+		  let theOne = Object.keys(controls).findIndex(key => controls[key].value !== '');
+		  if (theOne === -1) {			
+			return {
+			  atLeastOneRequired: {
+				text: 'At least one should be selected'
+			  }
+			}
+		  }
+		};
+		 return null;
+	  }
 
 	public togglecolumnCheckbox(column: any) {
 		const isChecked = column.show;
@@ -145,9 +160,6 @@ export class DataTableComponent implements OnInit {
 		});
 	}
 
-	facilityList: any = [];
-	customerList: any = [];
-	filtersOption: any = {};
 	filteredApplied(event: any, props: string) {
 		this.filtersOption[props] = event.target.value;
 		this.filteredRows = this.storedRows;
@@ -160,12 +172,55 @@ export class DataTableComponent implements OnInit {
 		}
 	}
 
-	resetValue = new FormControl();
-	resetFilterApplied() {
-		this.filtersOption = {};
-		this.resetValue.reset();
-		this.filteredRows = this.storedRows;
+	getFacilityChange() {
+		this.isLoading = true;
+		this.http.getClaimByFacility(this.facilityChange).subscribe((data: any) => {
+			this.isLoading = false;
+			 //this.rows = data;
+			if (data.length > 0) {
+				data = data.reverse();
+			}
+			this.storedRows = data.map((item: any, index: number) => {
+				if (!item.creationDate) {
+					item.creationDate = this.rows[index].date
+				}
+				item.claimedAmount = Number(item.claimedAmount ? item.claimedAmount : 0);
 
+				return { ...this.rows[index], ...item }
+			});
+			this.filteredRows = data.map((item: any, index: number) => {
+				if (!item.creationDate) {
+					item.creationDate = this.rows[index].date
+				}
+				item.claimedAmount = '$' + Number(item.claimedAmount ? item.claimedAmount : 0);
+				return { ...this.rows[index], ...item }
+			});
+			this.showGrid = true;
+		});
+	}
+
+	resetFilterApplied() {
+		this.getFacilityChange();
+		this.filtersOption = {};
+		this.campaignOne.reset();
+		this.campaignTwo.reset();
+		this.filterForm.reset();
+		this.filteredRows = this.storedRows;
+	}
+
+	searchFilter() {
+		if (this.filterForm.dirty || this.campaignOne.dirty ){
+			this.http.filterClaim(this.filterForm, this.datepipe.transform(this.campaignOne.get('start')?.value, 'dd-MMM-yyyy')).subscribe((data: any) => {
+				this.filteredRows = data.map((item: any, index: number) => {
+					if (!item.creationDate) {
+						item.creationDate = this.rows[index].date
+					}
+					item.claimedAmount = '$' + Number(item.claimedAmount ? item.claimedAmount : 0);
+					return { ...this.rows[index], ...item }
+				});
+			});
+		
+		}	
 	}
 }
 
@@ -209,6 +264,7 @@ export class DataTableOrdersComponent implements OnInit {
 		customer: ['']
 	})
 	isLoading: boolean = false;
+	filterForm!: FormGroup;
 
 	constructor(public dialog: MatDialog, private http: ClaimsApiService, private _formBuilder: FormBuilder,
 		private cd: ChangeDetectorRef, private toastr: ToastrService) {
@@ -269,6 +325,7 @@ export class DataTableOrdersComponent implements OnInit {
 	}
 	filtersOption: any = {};
 	filteredApplied(event: any, props: string) {
+		console.log(event, props)
 		this.filtersOption[props] = event.target.value;
 		this.filteredRows = this.rows;
 		for (let filter of Object.keys(this.filtersOption)) {
@@ -285,6 +342,8 @@ export class DataTableOrdersComponent implements OnInit {
 		this.filtersOption = {};
 		this.resetValue.reset();
 		this.filteredRows = this.rows;
+	}
 
+	searchFilter() {
 	}
 }

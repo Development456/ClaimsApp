@@ -13,11 +13,11 @@
 </mat-card-header>
 <div *ngIf="isLoading" class="snippet" data-title="dot-revolution">
     <div class="stage">
-      <div class="dot-revolution"></div>
+        <div class="dot-revolution"></div>
     </div>
 </div>
-<br/>
-<div *ngIf="rows.length > 0 && showGrid" fxFlexFill fxLayout="column">
+<br />
+<div *ngIf="rows.length > 0 && showGrid && !isLoading" fxFlexFill fxLayout="column">
     <div fxFlex fxLayoutAlign="end start" fxLayoutGap="20px">
         <div>
             <button mat-stroked-button color="primary" mat-button (click)="sortingfilters = !sortingfilters">
@@ -30,7 +30,8 @@
                 <mat-icon>check_box</mat-icon>Display Fields
             </button>
             <mat-menu #menu="matMenu" (click)="$event.stopPropagation()">
-                <li mat-menu-item *ngFor="let item of columns" class="li-column-list" (click)="$event.stopPropagation()">
+                <li mat-menu-item *ngFor="let item of columns" class="li-column-list"
+                    (click)="$event.stopPropagation()">
                     <mat-checkbox [checked]="item.show" (change)="togglecolumnCheckbox(item)" color="primary">
                         {{item.name}} </mat-checkbox>
                 </li>
@@ -45,54 +46,55 @@
     </div>
     <br />
     <mat-card *ngIf="sortingfilters && tableType == 'claim'">
-        <span *ngFor="let item of filteredColumns">
-            <span *ngIf="item.show && item.name == 'Category'">
-                <mat-form-field appearance="outline" color="primary">
-                    <select matNativeControl placeholder="Claim Category" (change)="filteredApplied($event,item.props)" [formControl]="resetValue">
-                        <option value="Damage">Damage</option>
-                        <option value="Shortage">Shortage</option>
-                        <option value="Detention">Detention</option>
-                        <option value="Freight">Freight</option>
-                        <option value="Demurrage – EUF">Demurrage – EUF</option>
-                        <option value="Freight Cost">Freight Cost</option>
-                        <option value="Inventory Adjustment">Inventory Adjustment
-                        </option>
-                    </select>
-                    <mat-label>Category</mat-label>
-                </mat-form-field>
-                &nbsp;
+        <form [formGroup]="filterForm">
+            <span *ngFor="let item of filteredColumns">
+                <span *ngIf="item.show && item.name == 'Category'">
+                    <mat-form-field appearance="outline" color="primary">
+                        <select matNativeControl placeholder="Claim Category" formControlName="category">
+                            <option value="Damage">Damage</option>
+                            <option value="Shortage">Shortage</option>
+                            <option value="Detention">Detention</option>
+                            <option value="Freight">Freight</option>
+                            <option value="Demurrage – EUF">Demurrage – EUF</option>
+                            <option value="Freight Cost">Freight Cost</option>
+                            <option value="Inventory Adjustment">Inventory Adjustment
+                            </option>
+                        </select>
+                        <mat-label>Category</mat-label>
+                    </mat-form-field>
+                    &nbsp;
 
+                </span>
+
+                <span *ngIf="item.show && item.name == 'Claim Type'">
+                    <mat-form-field appearance="outline">
+                        <select matNativeControl placeholder="Claim Type" formControlName="claimType">
+                            <option value="WAREHOUSE">Warehouse</option>
+                            <option value="TRANSPORTATION">Transportation</option>
+                        </select>
+                        <mat-label>Claim Type</mat-label>
+                    </mat-form-field>
+                    &nbsp;
+                </span>
+
+                <span
+                    *ngIf="item.name != 'Category' && item.name != 'Claim Type' && item.name != 'Date' && item.name != 'Date Closed'">
+                    <mat-form-field appearance="outline">
+                        <mat-label>{{item.name}}</mat-label>
+                        <input matInput type={{item.type}} placeholder={{item.name}} formControlName="{{item.props}}" />
+                    </mat-form-field>
+                    &nbsp;
+                </span>
             </span>
-
-        <span *ngIf="item.show && item.name == 'Claim Type'">
-                <mat-form-field appearance="outline">
-                    <select matNativeControl placeholder="Claim Type" (change)="filteredApplied($event,item.props)" [formControl]="resetValue">
-                        <option value="WAREHOUSE">Warehouse</option>
-                        <option value="TRANSPORTATION">Transportation</option>
-                    </select>
-                    <mat-label>Claim Type</mat-label>
-                </mat-form-field>
-                &nbsp;
-
-            </span>
-        <span *ngIf="item.name != 'Category' && item.name != 'Claim Type' && item.name != 'Date' && item.name != 'Date Closed'">
-                <mat-form-field appearance="outline">
-                    <mat-label>{{item.name}}</mat-label>
-                    <input matInput type={{item.type}} placeholder={{item.name}}
-                        (keyup)="filteredApplied($event,item.props)" [formControl]="resetValue"/>
-                </mat-form-field>
-                &nbsp;
-            </span>
-
-
-        </span>
+        </form>
     </mat-card>
 
     <mat-card *ngIf="sortingfilters && tableType == 'order'">
         <form [formGroup]="filteredObject">
             <mat-form-field appearance="outline">
                 <mat-label>Date Created Range</mat-label>
-                <mat-date-range-input [formGroup]="campaignTwo" [rangePicker]="campaignTwoPicker" [comparisonStart]="campaignOne.value.start" [comparisonEnd]="campaignOne.value.end">
+                <mat-date-range-input [formGroup]="campaignTwo" [rangePicker]="campaignTwoPicker"
+                    [comparisonStart]="campaignOne.value.start" [comparisonEnd]="campaignOne.value.end">
                     <input matStartDate placeholder="Start date" formControlName="start">
                     <input matEndDate placeholder="End date" formControlName="end">
                 </mat-date-range-input>
@@ -102,7 +104,8 @@
             </mat-form-field>
             <mat-form-field appearance="outline">
                 <mat-label>Facility</mat-label>
-                <input type="text" placeholder="Pick one" formControlName="facility" aria-label="Number" matInput [matAutocomplete]="auto">
+                <input type="text" placeholder="Pick one" formControlName="facility" aria-label="Number" matInput
+                    [matAutocomplete]="auto">
                 <mat-autocomplete #auto="matAutocomplete">
                     <mat-option *ngFor="let option of facilityList" [value]="option.facilityName">
                         {{option.facilityName}}
@@ -111,7 +114,8 @@
             </mat-form-field>
             <mat-form-field appearance="outline">
                 <mat-label>Customer</mat-label>
-                <input type="text" placeholder="Pick one" formControlName="customer" aria-label="Number" matInput [matAutocomplete]="auto1">
+                <input type="text" placeholder="Pick one" formControlName="customer" aria-label="Number" matInput
+                    [matAutocomplete]="auto1">
                 <mat-autocomplete #auto1="matAutocomplete">
                     <mat-option *ngFor="let option of customerList" [value]="option.name">
                         {{option.name}}
@@ -120,7 +124,8 @@
             </mat-form-field>
             <mat-form-field appearance="outline">
                 <mat-label>Customer Reference Number</mat-label>
-                <input type="text" placeholder="Pick one" formControlName="customer" aria-label="Number" matInput [matAutocomplete]="auto2">
+                <input type="text" placeholder="Pick one" formControlName="customer" aria-label="Number" matInput
+                    [matAutocomplete]="auto2">
                 <mat-autocomplete #auto2="matAutocomplete">
                     <mat-option *ngFor="let option of customerList" [value]="option">
                         {{option}}
@@ -129,19 +134,18 @@
             </mat-form-field>
             <mat-form-field appearance="outline">
                 <mat-label>AMC Reference Number</mat-label>
-                <input type="text" placeholder="Pick one" formControlName="customer" aria-label="Number" matInput [matAutocomplete]="auto3">
+                <input type="text" placeholder="Pick one" formControlName="customer" aria-label="Number" matInput
+                    [matAutocomplete]="auto3">
                 <mat-autocomplete #auto3="matAutocomplete">
                     <mat-option *ngFor="let option of customerList" [value]="option">
                         {{option}}
                     </mat-option>
                 </mat-autocomplete>
             </mat-form-field>
-            <br/>
-
+            <br />
         </form>
 
         <!-- <span *ngFor="let item of filteredColumns">
-
         <span>
                 <mat-form-field appearance="outline">
                     <mat-label>{{item.name}}</mat-label>
@@ -150,9 +154,8 @@
                 </mat-form-field>
                 &nbsp;
             </span>
-
-
         </span> -->
+
     </mat-card>
 
     <mat-card *ngIf="sortingfilters">
@@ -160,41 +163,43 @@
 
             <mat-form-field appearance="outline" *ngIf="item.show && item.name == 'Date'">
                 <mat-label>Created Date Range</mat-label>
-                <mat-date-range-input
-                            [formGroup]="campaignOne"
-                            [rangePicker]="campaignOnePicker"
-                                [comparisonStart]="campaignTwo.value.start"
-                                [comparisonEnd]="campaignTwo.value.end">
-                                <input matStartDate placeholder="Start date" formControlName="start" [formControl]="resetValue">
-                            <input matEndDate placeholder="End date" formControlName="end" [formControl]="resetValue">
-                        </mat-date-range-input>
-                            <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-                        <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
-                        <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+                <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker">
+                    <input matStartDate placeholder="Start date" formControlName="start">
+                    <input matEndDate placeholder="End date" formControlName="end">
+                </mat-date-range-input>
+                <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+                <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
             </mat-form-field>
             <span *ngIf="item.show && item.name == 'Date'">&nbsp;</span>
-        <mat-form-field appearance="outline" *ngIf="item.show && item.name == 'Date Closed'">
-            <mat-label>Date Closed Range</mat-label>
-            <mat-date-range-input [formGroup]="campaignTwo" [rangePicker]="campaignTwoPicker" [comparisonStart]="campaignOne.value.start" [comparisonEnd]="campaignOne.value.end">
-                <input matStartDate placeholder="Start date" formControlName="start" [formControl]="resetValue">
-                <input matEndDate placeholder="End date" formControlName="end" [formControl]="resetValue">
-            </mat-date-range-input>
-            <mat-datepicker-toggle matSuffix [for]="campaignTwoPicker"></mat-datepicker-toggle>
-            <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-            <mat-date-range-picker #campaignTwoPicker></mat-date-range-picker>
-        </mat-form-field>
+            <mat-form-field appearance="outline" *ngIf="item.show && item.name == 'Date Closed'">
+                <mat-label>Date Closed Range</mat-label>
+                <mat-date-range-input [formGroup]="campaignTwo" [rangePicker]="campaignTwoPicker">
+                    <input matStartDate placeholder="Start date" formControlName="start" [formControl]="resetValue">
+                    <input matEndDate placeholder="End date" formControlName="end" [formControl]="resetValue">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matSuffix [for]="campaignTwoPicker"></mat-datepicker-toggle>
+                <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+                <mat-date-range-picker #campaignTwoPicker></mat-date-range-picker>
+            </mat-form-field>
         </span>
-
-        <button mat-raised-button color="primary" class="float-end reset" (click)="resetFilterApplied()"> RESET </button>
+        <div class="float-end">
+            <button [disabled]="filterForm.errors !== null &&  !campaignOne.dirty" mat-raised-button color="basic" class="save" style="background-color: #00aae7; color: white;" (click)="searchFilter()"> <mat-icon>search</mat-icon>
+                Search </button>
+            <button [disabled]="filterForm.errors !== null && !campaignOne.dirty" mat-raised-button color="primary" class="reset" (click)="resetFilterApplied()">
+                <mat-icon>refresh</mat-icon> Reset </button>
+        </div>
     </mat-card>
     <br />
     <div id="print-section">
-        <ngx-datatable class="material" [scrollbarH]="true" [rows]="filteredRows" [columns]="filteredColumns" [selectionType]="SelectionType.checkbox" id="claims-table" [columnMode]="ColumnMode.force" [headerHeight]="40" [footerHeight]="40" [rowHeight]="rowHeight"
-            [limit]="10">
+        <ngx-datatable class="material" [scrollbarH]="true" [rows]="filteredRows" [columns]="filteredColumns"
+            [selectionType]="SelectionType.checkbox" id="claims-table" [columnMode]="ColumnMode.force"
+            [headerHeight]="40" [footerHeight]="40" [rowHeight]="rowHeight" [limit]="10">
             <ngx-datatable-column *ngFor="let col of filteredColumns" [name]="col.name" [prop]="col.props">
             </ngx-datatable-column>
-            <ngx-datatable-column *ngIf="showActions" [frozenRight]="true" name="Actions" [resizeable]="false" [sortable]="false" [draggable]="false" [canAutoResize]="true">
-                <ng-template let-row="row"  let-rowIndex="rowIndex" ngx-datatable-cell-template>
+            <ngx-datatable-column *ngIf="showActions" [frozenRight]="true" name="Actions" [resizeable]="false"
+                [sortable]="false" [draggable]="false" [canAutoResize]="true">
+                <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
                     <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Menu">
                         <mat-icon color="primary">checklist</mat-icon> Actions
                     </button>
@@ -214,7 +219,6 @@
                     </mat-menu>
                 </ng-template>
             </ngx-datatable-column>
-
         </ngx-datatable>
     </div>
 </div>

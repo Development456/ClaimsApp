@@ -1,6 +1,6 @@
 package com.miracle.claims.repository;
 
-import java.util.Date;
+
 import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -34,11 +34,10 @@ public interface ClaimsRepository extends MongoRepository<Claim, String> {
 	public Claim findByCustomerClaimId(String claimId);
 	
 	@Query("{create_date :?0}")
-	public List<Claim> findByCreateDate(Date createdDate);
+	public List<Claim> findByCreatedDate(String createdDate);
 	
 	@Query("{closed_date :?0}")
 	public List<Claim> findByClosedDate(String closedDate);
-	
 //	@Query("{claimedAmount: ?0, claimStatus: ?1}")
 //	public List<Claim> findByClaimedAmountandStatus(String claimedAmount, String claimStatus);
 		
