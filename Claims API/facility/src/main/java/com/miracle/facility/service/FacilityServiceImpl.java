@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -30,7 +33,10 @@ public class FacilityServiceImpl implements FacilityService {
 	
 	//get facility filter
 	@Override
-	public ResponseEntity<List<Facility>> getAllFacilityFilter(Facility facility){
+	public ResponseEntity<List<Facility>> getAllFacilityFilter(Facility facility, int page, int size, String sort){
+		
+		Pageable pageable = PageRequest.of(page, size);
+		
 		Query query = new Query();
 		
 		List<Criteria> criteria = new ArrayList<>();
@@ -71,7 +77,7 @@ public class FacilityServiceImpl implements FacilityService {
 		if(facility.getCategory() != null) {
 			criteria.add(Criteria.where("category").is(facility.getCategory()));
 		}
-		query.addCriteria(new Criteria().andOperator(criteria.toArray(new Criteria[criteria.size()])));
+		query.addCriteria(new Criteria().andOperator(criteria.toArray(new Criteria[criteria.size()]))).with(pageable).with(Sort.by(Sort.Order.asc("sort")));
 		List<Facility> filteredVals = mongoOperations.find(query, Facility.class);
 		
 		return new ResponseEntity<List<Facility>>(filteredVals, new HttpHeaders(), HttpStatus.OK);

@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -38,8 +42,14 @@ public class ClaimsServiceImpl implements ClaimsService {
 		return new ResponseEntity<List<Claim>>(claim , new HttpHeaders(), HttpStatus.OK);
 	}
 	
+	
+	//filter
 	@Override
-	public ResponseEntity<List<Claim>> getAllClaimsFilter(Claim claim) {
+	public ResponseEntity<List<Claim>> getAllClaimsFilter(Claim claim, int page, int size, String sort) {
+		
+		
+		
+		Pageable pageable = PageRequest.of(page, size);
 		
 		Query query = new Query();
 		List<Criteria> criteria = new ArrayList<>();
@@ -72,7 +82,8 @@ public class ClaimsServiceImpl implements ClaimsService {
 		}
 		
 		//utility package //class constant //nothing 
-		query.addCriteria(new Criteria().andOperator(criteria.toArray(new Criteria[criteria.size()])));
+		query.addCriteria(new Criteria().andOperator(criteria.toArray(new Criteria[criteria.size()]))).with(pageable).with(Sort.by(Sort.Order.asc("sort")));
+		
 		List<Claim> filteredVals = mongoOperations.find(query, Claim.class);
 		
 		return new ResponseEntity<List<Claim>>(filteredVals, new HttpHeaders(), HttpStatus.OK);

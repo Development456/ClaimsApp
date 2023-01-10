@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,8 @@ public class FacilityController {
 	@Autowired
 	private FacilityServiceImpl facilityServiceImpl;
 	
+	
+	// http://localhost:8200/filter?page=1&size=4&sort=claimId
 	@Timed(
 			value = "facility.getAll",
 			histogram = true,
@@ -53,7 +56,7 @@ public class FacilityController {
 			@ApiResponse(code = 405, message = "Method not allowed", response = ErrorDetails.class),
 			@ApiResponse(code = 500, message = "Internal server error", response = ErrorDetails.class) })
 	@GetMapping("/filter")
-	public ResponseEntity<List<Facility>> getfilter(@RequestHeader Map<String, String> headers) {
+	public ResponseEntity<List<Facility>> getfilter(@RequestHeader Map<String, String> headers, @Param(value= "page") int page, @Param(value="size") int size, @Param(value="sort") String sort) {
 		Facility facility = new Facility();
 		headers.forEach((key,value)->{  
 			
@@ -103,7 +106,7 @@ public class FacilityController {
 				facility.setCategory(value);
 			}
 		});
-		return facilityServiceImpl.getAllFacilityFilter(facility);
+		return facilityServiceImpl.getAllFacilityFilter(facility, page, size, sort);
 	}
 	
 	//get all 

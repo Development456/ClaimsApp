@@ -9,7 +9,7 @@ import com.miracle.facility.entity.Facility;
 public interface FacilityService {
 	
 		//get by filter
-		public ResponseEntity<List<Facility>> getAllFacilityFilter(Facility facility);
+		public ResponseEntity<List<Facility>> getAllFacilityFilter(Facility facility, int page, int size, String sort);
 		
 		// get all facility
 		public ResponseEntity<List<Facility>> getAll(); 

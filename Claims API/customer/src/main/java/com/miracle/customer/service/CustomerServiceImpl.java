@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -31,7 +34,10 @@ public class CustomerServiceImpl implements CustomerService{
 	
 	//filter for customer
 	@Override
-	public ResponseEntity<List<Customer>> getAllCustomerFilter(Customer customer){
+	public ResponseEntity<List<Customer>> getAllCustomerFilter(Customer customer, int page, int size, String sort){
+		
+		Pageable pageable = PageRequest.of(page, size);
+		
 		Query query = new Query();
 		
 		List<Criteria> criteria = new ArrayList<>();
@@ -40,13 +46,13 @@ public class CustomerServiceImpl implements CustomerService{
 			criteria.add(Criteria.where("name").is(customer.getName()));
 		}
 		if(customer.getAddressLine1() != null) {
-			criteria.add(Criteria.where("address_Line_1").is(customer.getAddressLine1()));
+			criteria.add(Criteria.where("address_line_1").is(customer.getAddressLine1()));
 		}
 		if(customer.getAddressLine2() != null) {
-			criteria.add(Criteria.where("address_Line_2").is(customer.getAddressLine2()));
+			criteria.add(Criteria.where("address_line_2").is(customer.getAddressLine2()));
 		}
 		if(customer.getAddressLine3() != null) {
-			criteria.add(Criteria.where("address_Line_3").is(customer.getAddressLine3()));
+			criteria.add(Criteria.where("address_line_3").is(customer.getAddressLine3()));
 		}
 		if(customer.getCity() != null) {
 			criteria.add(Criteria.where("city").is(customer.getCity()));
@@ -55,7 +61,7 @@ public class CustomerServiceImpl implements CustomerService{
 			criteria.add(Criteria.where("state").is(customer.getState()));
 		}
 		if(customer.getPostalCode() != null) {
-			criteria.add(Criteria.where("postal_ode").is(customer.getPostalCode()));
+			criteria.add(Criteria.where("postal_code").is(customer.getPostalCode()));
 		}
 		if(customer.getCountry() != null) {
 			criteria.add(Criteria.where("country").is(customer.getCountry()));
@@ -82,8 +88,11 @@ public class CustomerServiceImpl implements CustomerService{
 			criteria.add(Criteria.where("last_update_date").is(customer.getLastUpdateDate()));
 		}
 		
-		query.addCriteria(new Criteria().andOperator(criteria.toArray(new Criteria[criteria.size()])));
+		query.addCriteria(new Criteria().andOperator(criteria.toArray(new Criteria[criteria.size()]))).with(pageable).with(Sort.by(Sort.Order.asc("sort")));
 		List<Customer> filteredVals = mongoOperations.find(query, Customer.class);
+		
+		
+
 		
 		return new ResponseEntity<List<Customer>>(filteredVals, new HttpHeaders(), HttpStatus.OK);
 	}

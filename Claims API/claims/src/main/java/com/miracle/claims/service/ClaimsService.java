@@ -9,7 +9,7 @@ import com.miracle.claims.beans.Claim;
 
 public interface ClaimsService {
 	
-public ResponseEntity<List<Claim>> getAllClaimsFilter(Claim claim);
+public ResponseEntity<List<Claim>> getAllClaimsFilter(Claim claim, int page, int size, String sort);
 	
 	public ResponseEntity<List<Claim>> getAllClaimsByStatus();
 	
