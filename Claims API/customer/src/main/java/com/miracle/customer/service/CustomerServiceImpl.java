@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -39,6 +38,8 @@ public class CustomerServiceImpl implements CustomerService{
 		Pageable pageable = PageRequest.of(page, size);
 		
 		Query query = new Query();
+		
+		query.with(pageable);
 		
 		List<Criteria> criteria = new ArrayList<>();
 		
@@ -88,7 +89,7 @@ public class CustomerServiceImpl implements CustomerService{
 			criteria.add(Criteria.where("last_update_date").is(customer.getLastUpdateDate()));
 		}
 		
-		query.addCriteria(new Criteria().andOperator(criteria.toArray(new Criteria[criteria.size()]))).with(pageable).with(Sort.by(Sort.Order.asc("sort")));
+		query.addCriteria(new Criteria().andOperator(criteria.toArray(new Criteria[criteria.size()])));
 		List<Customer> filteredVals = mongoOperations.find(query, Customer.class);
 		
 		

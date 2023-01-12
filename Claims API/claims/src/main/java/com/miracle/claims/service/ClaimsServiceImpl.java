@@ -6,8 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -52,6 +50,8 @@ public class ClaimsServiceImpl implements ClaimsService {
 		Pageable pageable = PageRequest.of(page, size);
 		
 		Query query = new Query();
+		query.with(pageable);
+		
 		List<Criteria> criteria = new ArrayList<>();
 		
 		if(claim.getClaimId() != null) {
@@ -81,8 +81,7 @@ public class ClaimsServiceImpl implements ClaimsService {
 			criteria.add(Criteria.where("create_date").is(claim.getCreatedDate()));
 		}
 		
-		//utility package //class constant //nothing 
-		query.addCriteria(new Criteria().andOperator(criteria.toArray(new Criteria[criteria.size()]))).with(pageable).with(Sort.by(Sort.Order.asc("sort")));
+		query.addCriteria(new Criteria().andOperator(criteria.toArray(new Criteria[criteria.size()])));
 		
 		List<Claim> filteredVals = mongoOperations.find(query, Claim.class);
 		

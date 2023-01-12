@@ -56,7 +56,10 @@ public class FacilityController {
 			@ApiResponse(code = 405, message = "Method not allowed", response = ErrorDetails.class),
 			@ApiResponse(code = 500, message = "Internal server error", response = ErrorDetails.class) })
 	@GetMapping("/filter")
-	public ResponseEntity<List<Facility>> getfilter(@RequestHeader Map<String, String> headers, @Param(value= "page") int page, @Param(value="size") int size, @Param(value="sort") String sort) {
+	public ResponseEntity<List<Facility>> getfilter(@RequestHeader Map<String, String> headers, 
+													@Param(value= "page") int page, 
+													@Param(value="size") int size,
+													@Param(value="sort") String sort) {
 		Facility facility = new Facility();
 		headers.forEach((key,value)->{  
 			
