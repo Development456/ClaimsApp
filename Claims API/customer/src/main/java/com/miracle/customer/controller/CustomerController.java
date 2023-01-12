@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,6 +64,8 @@ public class CustomerController {
 	}
 	
 	
+	//filter
+	//http://localhost:8400/filter?page=1&size=10&sort=claimId
 	@Timed(
 			value = "customer.getAll",
 			histogram = true,
@@ -80,7 +83,7 @@ public class CustomerController {
 			@ApiResponse(code = 405, message = "Method not allowed", response = ErrorDetails.class),
 			@ApiResponse(code = 500, message = "Internal server error", response = ErrorDetails.class) })
 	@GetMapping("/filter")
-	public ResponseEntity<List<Customer>> getfilter(@RequestHeader Map<String, String> headers) {
+	public ResponseEntity<List<Customer>> getFilter(@RequestHeader Map<String, String> headers, @Param(value= "page") int page, @Param(value="size") int size, @Param(value="sort") String sort) {
 		Customer customer = new Customer();
 		headers.forEach((key,value)->{  
 			
@@ -138,7 +141,7 @@ public class CustomerController {
 				customer.setLastUpdateDate(value);
 			}
 		});
-		return customerServices.getAllCustomerFilter(customer);
+		return customerServices.getAllCustomerFilter(customer, page, size, sort);
 	}
 	/**
 	 * Gets the customer by customer id.

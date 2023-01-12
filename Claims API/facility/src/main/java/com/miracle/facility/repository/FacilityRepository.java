@@ -4,11 +4,10 @@ import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
-import org.springframework.stereotype.Repository;
 
 import com.miracle.facility.entity.Facility;
 
-@Repository
+
 public interface FacilityRepository extends MongoRepository<Facility, String> {
 	
 	public List<Facility> findAll();

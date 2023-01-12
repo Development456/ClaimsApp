@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,7 +70,7 @@ public class ClaimsController {
 		return claimsServices.getAllClaims();
 	}
 	
-	
+	//http://localhost:8100/claims/filter?page=1&size=4&sort=claimId
 	@Timed(
 			value = "claims.getAll",
 			histogram = true,
@@ -87,7 +88,9 @@ public class ClaimsController {
 			@ApiResponse(code = 405, message = "Method not allowed", response = ErrorDetails.class),
 			@ApiResponse(code = 500, message = "Internal server error", response = ErrorDetails.class) })
 	@GetMapping("/filter")
-	public ResponseEntity<List<Claim>> getfilter(@RequestHeader Map<String, String> headers) {
+	public ResponseEntity<List<Claim>> getfilter(@RequestHeader Map<String, String> headers, @Param(value= "page") int page, @Param(value="size") int size, @Param(value="sort") String sort) {
+		
+		
 		Claim claim = new Claim();
 		headers.forEach((key,value)->{  
 			
@@ -134,7 +137,7 @@ public class ClaimsController {
 				claim.setLastUpdateDate(value);
 			}
 		});
-		return claimsServices.getAllClaimsFilter(claim);
+		return claimsServices.getAllClaimsFilter(claim, page, size, sort);
 	}
 	
 	/**
